@@ -344,6 +344,9 @@ function initLocalDatabase() {
     if (!localStorage.getItem("client-bookings")) {
         localStorage.setItem("client-bookings", JSON.stringify([]));
     }
+    if (!localStorage.getItem("admin-pin")) {
+        localStorage.setItem("admin-pin", "1234");
+    }
 
     // Apply active prices to visual cards in wizard
     syncWizardPrices();
@@ -701,6 +704,49 @@ function getAIResponseText(query) {
 function initAdminPanel() {
     loadAdminData();
     renderAdminBookings();
+    updateAdminPanelVisibility();
+}
+
+function updateAdminPanelVisibility() {
+    const loginGate = document.getElementById("admin-login-gate");
+    const dashboardView = document.getElementById("admin-dashboard-view");
+    
+    if (!loginGate || !dashboardView) return;
+
+    if (sessionStorage.getItem("admin-authenticated") === "true") {
+        loginGate.style.display = "none";
+        dashboardView.style.display = "block";
+    } else {
+        loginGate.style.display = "block";
+        dashboardView.style.display = "none";
+    }
+}
+
+function handleAdminLogin(event) {
+    event.preventDefault();
+    const input = document.getElementById("admin-passcode");
+    const errorMsg = document.getElementById("admin-login-error");
+    
+    if (!input) return;
+
+    const enteredPin = input.value;
+    const correctPin = localStorage.getItem("admin-pin") || "1234";
+
+    if (enteredPin === correctPin) {
+        sessionStorage.setItem("admin-authenticated", "true");
+        if (errorMsg) errorMsg.style.display = "none";
+        input.value = "";
+        updateAdminPanelVisibility();
+    } else {
+        if (errorMsg) errorMsg.style.display = "block";
+        input.value = "";
+        input.focus();
+    }
+}
+
+function handleAdminLogout() {
+    sessionStorage.removeItem("admin-authenticated");
+    updateAdminPanelVisibility();
 }
 
 function switchAdminTab(tabName) {
@@ -777,6 +823,8 @@ window.renderAvailableSlots = renderAvailableSlots;
 window.submitBooking = submitBooking;
 window.switchAdminTab = switchAdminTab;
 window.saveAdminPrices = saveAdminPrices;
+window.handleAdminLogin = handleAdminLogin;
+window.handleAdminLogout = handleAdminLogout;
 
 function saveAdminFAQ() {
     const faq = {
