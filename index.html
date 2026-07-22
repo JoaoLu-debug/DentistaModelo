@@ -420,7 +420,7 @@
     <!-- Footer -->
     <footer class="main-footer">
         <p>&copy; 2026 Seu Site Estética e Saúde. Todos os direitos reservados. Desenvolvido com Estética Refrativa de Luxo.</p>
-        <p style="margin-top: 12px; font-size: 11px;"><a href="#" onclick="openDrawer('admin'); return false;" style="color: var(--color-accent); text-decoration: underline;">Painel do Profissional (Admin)</a></p>
+        <p style="margin-top: 12px; font-size: 11px;"><a href="admin.html" target="_blank" style="color: var(--color-accent); text-decoration: underline;">Painel do Profissional (Admin)</a></p>
     </footer>
 
     <!-- Specialty Detail Drawers (Laterais / Sliders) -->
@@ -663,107 +663,7 @@
         </div>
     </div>
 
-    <!-- Drawer: Professional Administrative Panel -->
-    <div class="drawer glass-panel" id="drawer-admin">
-        <button class="drawer-close" onclick="closeAllDrawers()">&times;</button>
-        <div class="drawer-content">
-            <!-- Admin Login Gate -->
-            <div id="admin-login-gate" class="admin-login-gate">
-                <span class="drawer-tag">Acesso Restrito</span>
-                <h2>Identificação do Profissional</h2>
-                <p style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 24px;">Digite o PIN de segurança para acessar o Painel Administrativo de agendamento e controle.</p>
-                
-                <form id="admin-login-form" onsubmit="handleAdminLogin(event)">
-                    <div class="input-group">
-                        <label for="admin-passcode">PIN de Acesso</label>
-                        <input type="password" id="admin-passcode" required placeholder="••••" style="text-align: center; letter-spacing: 0.5em; font-size: 18px;" maxlength="8">
-                        <span style="font-size: 10px; color: var(--color-text-secondary); margin-top: 8px; text-align: center;">PIN Padrão para Testes: <strong>1234</strong></span>
-                    </div>
-                    <button type="submit" class="btn-primary full-width" style="margin-top: 16px;">
-                        <span>Entrar no Painel</span>
-                    </button>
-                </form>
-                <p id="admin-login-error" style="color: #e74c3c; font-size: 12px; margin-top: 12px; text-align: center; display: none;">Código de acesso inválido. Tente novamente.</p>
-            </div>
 
-            <!-- Admin Dashboard View (hidden by default) -->
-            <div id="admin-dashboard-view" style="display: none;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <span class="drawer-tag" style="margin-bottom: 0;">Área Administrativa</span>
-                    <button onclick="handleAdminLogout()" class="btn-cancel-booking" style="padding: 4px 10px;">Sair</button>
-                </div>
-                <h2>Painel do Profissional</h2>
-                
-                <div class="admin-tabs" style="display: flex; gap: 8px; margin-bottom: 24px; margin-top: 16px;">
-                    <button class="admin-tab-btn active" id="btn-tab-prices" onclick="switchAdminTab('prices')">Valores</button>
-                    <button class="admin-tab-btn" id="btn-tab-slots" onclick="switchAdminTab('slots')">Agenda</button>
-                    <button class="admin-tab-btn" id="btn-tab-bookings" onclick="switchAdminTab('bookings')">Agendamentos</button>
-                </div>
-
-                <!-- Admin Tab 1: Prices & Services -->
-                <div class="admin-tab-content active" id="admin-tab-prices">
-                    <h3>Configurar Valores dos Serviços</h3>
-                    <p style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 20px;">Edite os custos mínimos de cada procedimento. O Chatbot AI e o Agendador serão atualizados instantaneamente.</p>
-                    
-                    <div class="input-group">
-                        <label for="admin-price-harmonizacao">Preço Mínimo: Harmonização Facial</label>
-                        <input type="number" id="admin-price-harmonizacao" min="0" onchange="saveAdminPrices()">
-                    </div>
-                    <div class="input-group">
-                        <label for="admin-price-corporal">Preço Mínimo: Tratamentos Corporais</label>
-                        <input type="number" id="admin-price-corporal" min="0" onchange="saveAdminPrices()">
-                    </div>
-                    <div class="input-group">
-                        <label for="admin-price-rejuvenescimento">Preço Mínimo: Rejuvenescimento Facial</label>
-                        <input type="number" id="admin-price-rejuvenescimento" min="0" onchange="saveAdminPrices()">
-                    </div>
-                    
-                    <h3 style="margin-top: 32px;">Configurar FAQ do Chatbot AI</h3>
-                    <p style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 20px;">Edite as respostas automáticas para dúvidas gerais.</p>
-                    
-                    <div class="input-group">
-                        <label for="admin-faq-endereco">Onde fica a clínica? (Endereço)</label>
-                        <textarea id="admin-faq-endereco" rows="2" onchange="saveAdminFAQ()"></textarea>
-                    </div>
-                    <div class="input-group">
-                        <label for="admin-faq-retorno">Como funciona a consulta de retorno?</label>
-                        <textarea id="admin-faq-retorno" rows="2" onchange="saveAdminFAQ()"></textarea>
-                    </div>
-                </div>
-
-                <!-- Admin Tab 2: Availability Calendar -->
-                <div class="admin-tab-content" id="admin-tab-slots">
-                    <h3>Gerenciar Disponibilidade</h3>
-                    <p style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 20px;">Selecione os dias da semana e horários padrões em que a clínica está aberta para agendamentos online.</p>
-                    
-                    <label class="input-group-label" style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--color-text-secondary); margin-bottom: 12px; display: block;">Dias de Atendimento</label>
-                    <div class="admin-days-grid" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px;">
-                        <label class="day-checkbox-label"><input type="checkbox" id="check-day-1" onchange="saveAdminAvailability()"> Seg</label>
-                        <label class="day-checkbox-label"><input type="checkbox" id="check-day-2" onchange="saveAdminAvailability()"> Ter</label>
-                        <label class="day-checkbox-label"><input type="checkbox" id="check-day-3" onchange="saveAdminAvailability()"> Qua</label>
-                        <label class="day-checkbox-label"><input type="checkbox" id="check-day-4" onchange="saveAdminAvailability()"> Qui</label>
-                        <label class="day-checkbox-label"><input type="checkbox" id="check-day-5" onchange="saveAdminAvailability()"> Sex</label>
-                        <label class="day-checkbox-label"><input type="checkbox" id="check-day-6" onchange="saveAdminAvailability()"> Sáb</label>
-                    </div>
-
-                    <label class="input-group-label" style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--color-text-secondary); margin-bottom: 12px; display: block;">Horários Padrões</label>
-                    <div class="admin-hours-list" id="admin-hours-container" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
-                        <!-- Checked hours will be rendered here -->
-                    </div>
-                </div>
-
-                <!-- Admin Tab 3: Active Client Bookings -->
-                <div class="admin-tab-content" id="admin-tab-bookings">
-                    <h3>Agendamentos Efetuados</h3>
-                    <p style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 20px;">Lista de horários reservados por clientes diretamente pelo site.</p>
-                    
-                    <div class="admin-bookings-list" id="admin-bookings-container">
-                        <p class="no-bookings-message">Nenhum agendamento realizado até o momento.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Floating AI Chatbot Widget -->
     <div class="ai-chat-widget" id="ai-chat-widget">

@@ -11,7 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
     initLocalDatabase();
     initBookingWizard();
     initAIChatbot();
-    initAdminPanel();
 });
 
 // 1. Theme Management (Pearlescent Light vs Midnight Obsidian)
@@ -344,8 +343,11 @@ function initLocalDatabase() {
     if (!localStorage.getItem("client-bookings")) {
         localStorage.setItem("client-bookings", JSON.stringify([]));
     }
-    if (!localStorage.getItem("admin-pin")) {
-        localStorage.setItem("admin-pin", "1234");
+    if (!localStorage.getItem("admin-managers")) {
+        const defaultManagers = [
+            { email: "admin@clinica.com", password: "senha123", name: "Administrador Padrão" }
+        ];
+        localStorage.setItem("admin-managers", JSON.stringify(defaultManagers));
     }
 
     // Apply active prices to visual cards in wizard
@@ -698,121 +700,6 @@ function getAIResponseText(query) {
     return `Entendi sua dúvida. Como sou uma assistente virtual, consigo passar informações programadas sobre serviços, custos mínimos (Harmonização: R$ ${prices.harmonizacao}), localização ou sobre agendamentos de consulta.<br><br>Gostaria de agendar um horário sem fila? Clique no chip <strong>'Agendar Direto'</strong>!`;
 }
 
-// ==========================================================================
-// 11. Professional Administrative Control Panel Logic
-// ==========================================================================
-function initAdminPanel() {
-    loadAdminData();
-    renderAdminBookings();
-    updateAdminPanelVisibility();
-}
-
-function updateAdminPanelVisibility() {
-    const loginGate = document.getElementById("admin-login-gate");
-    const dashboardView = document.getElementById("admin-dashboard-view");
-    
-    if (!loginGate || !dashboardView) return;
-
-    if (sessionStorage.getItem("admin-authenticated") === "true") {
-        loginGate.style.display = "none";
-        dashboardView.style.display = "block";
-    } else {
-        loginGate.style.display = "block";
-        dashboardView.style.display = "none";
-    }
-}
-
-function handleAdminLogin(event) {
-    event.preventDefault();
-    const input = document.getElementById("admin-passcode");
-    const errorMsg = document.getElementById("admin-login-error");
-    
-    if (!input) return;
-
-    const enteredPin = input.value;
-    const correctPin = localStorage.getItem("admin-pin") || "1234";
-
-    if (enteredPin === correctPin) {
-        sessionStorage.setItem("admin-authenticated", "true");
-        if (errorMsg) errorMsg.style.display = "none";
-        input.value = "";
-        updateAdminPanelVisibility();
-    } else {
-        if (errorMsg) errorMsg.style.display = "block";
-        input.value = "";
-        input.focus();
-    }
-}
-
-function handleAdminLogout() {
-    sessionStorage.removeItem("admin-authenticated");
-    updateAdminPanelVisibility();
-}
-
-function switchAdminTab(tabName) {
-    document.querySelectorAll(".admin-tab-btn").forEach(btn => btn.classList.remove("active"));
-    document.querySelectorAll(".admin-tab-content").forEach(content => content.classList.remove("active"));
-
-    document.getElementById(`btn-tab-${tabName}`).classList.add("active");
-    document.getElementById(`admin-tab-${tabName}`).classList.add("active");
-}
-
-function loadAdminData() {
-    const prices = JSON.parse(localStorage.getItem("admin-prices"));
-    const faq = JSON.parse(localStorage.getItem("admin-faq"));
-    const availability = JSON.parse(localStorage.getItem("admin-availability"));
-
-    // Populate tab 1: Prices & FAQ
-    if (prices) {
-        document.getElementById("admin-price-harmonizacao").value = prices.harmonizacao;
-        document.getElementById("admin-price-corporal").value = prices.corporal;
-        document.getElementById("admin-price-rejuvenescimento").value = prices.rejuvenescimento;
-    }
-    if (faq) {
-        document.getElementById("admin-faq-endereco").value = faq.address;
-        document.getElementById("admin-faq-retorno").value = faq.returnPolicy;
-    }
-
-    // Populate tab 2: Availability
-    if (availability) {
-        // days checkboxes (1 to 6)
-        for (let i = 1; i <= 6; i++) {
-            const chk = document.getElementById(`check-day-${i}`);
-            if (chk) chk.checked = availability.days.includes(i);
-        }
-
-        // hours rendering
-        const hoursContainer = document.getElementById("admin-hours-container");
-        if (hoursContainer) {
-            const allHours = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00"];
-            hoursContainer.innerHTML = "";
-            
-            allHours.forEach(hour => {
-                const label = document.createElement("label");
-                label.className = "hour-checkbox-label";
-                const checkedStr = availability.hours.includes(hour) ? "checked" : "";
-                label.innerHTML = `
-                    <input type="checkbox" value="${hour}" ${checkedStr} onchange="saveAdminAvailability()"> ${hour}
-                `;
-                hoursContainer.appendChild(label);
-            });
-        }
-    }
-}
-
-function saveAdminPrices() {
-    const prices = {
-        harmonizacao: parseInt(document.getElementById("admin-price-harmonizacao").value) || 0,
-        corporal: parseInt(document.getElementById("admin-price-corporal").value) || 0,
-        rejuvenescimento: parseInt(document.getElementById("admin-price-rejuvenescimento").value) || 0
-    };
-
-    localStorage.setItem("admin-prices", JSON.stringify(prices));
-    
-    // Sync UI elements
-    syncWizardPrices();
-}
-
 // Global functions exposed to window object for inline HTML event handlers
 window.openBookingFromChat = openBookingFromChat;
 window.sendQuickMessage = sendQuickMessage;
@@ -821,101 +708,3 @@ window.updateBookingServiceSelection = updateBookingServiceSelection;
 window.goToBookingStep = goToBookingStep;
 window.renderAvailableSlots = renderAvailableSlots;
 window.submitBooking = submitBooking;
-window.switchAdminTab = switchAdminTab;
-window.saveAdminPrices = saveAdminPrices;
-window.handleAdminLogin = handleAdminLogin;
-window.handleAdminLogout = handleAdminLogout;
-
-function saveAdminFAQ() {
-    const faq = {
-        address: document.getElementById("admin-faq-endereco").value,
-        returnPolicy: document.getElementById("admin-faq-retorno").value
-    };
-
-    localStorage.setItem("admin-faq", JSON.stringify(faq));
-}
-
-function saveAdminAvailability() {
-    const days = [];
-    for (let i = 1; i <= 6; i++) {
-        const chk = document.getElementById(`check-day-${i}`);
-        if (chk && chk.checked) days.push(i);
-    }
-
-    const hours = [];
-    const hoursContainer = document.getElementById("admin-hours-container");
-    if (hoursContainer) {
-        const checkboxes = hoursContainer.querySelectorAll("input[type='checkbox']");
-        checkboxes.forEach(chk => {
-            if (chk.checked) hours.push(chk.value);
-        });
-    }
-
-    const availability = { days, hours };
-    localStorage.setItem("admin-availability", JSON.stringify(availability));
-    
-    // Refresh client booking options grid if open
-    renderAvailableSlots();
-}
-
-function renderAdminBookings() {
-    const bookings = JSON.parse(localStorage.getItem("client-bookings")) || [];
-    const container = document.getElementById("admin-bookings-container");
-    
-    if (!container) return;
-
-    if (bookings.length === 0) {
-        container.innerHTML = `<p class="no-bookings-message">Nenhum agendamento realizado até o momento.</p>`;
-        return;
-    }
-
-    container.innerHTML = "";
-
-    const serviceNames = {
-        harmonizacao: "Harmonização Facial",
-        corporal: "Tratamentos Corporais",
-        rejuvenescimento: "Rejuvenescimento Facial"
-    };
-
-    bookings.forEach(b => {
-        const card = document.createElement("div");
-        card.className = "admin-booking-card";
-        
-        // Format Date
-        const dateParts = b.date.split('-');
-        const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
-
-        card.innerHTML = `
-            <div class="admin-booking-header">
-                <strong>${b.name}</strong>
-                <span>${b.code}</span>
-            </div>
-            <div class="admin-booking-details">
-                <p><strong>Procedimento:</strong> ${serviceNames[b.service]}</p>
-                <p><strong>Horário:</strong> ${formattedDate} às ${b.slot}</p>
-                <p><strong>Contato:</strong> ${b.phone} | ${b.email}</p>
-                <p><strong>Valor:</strong> R$ ${b.price}</p>
-            </div>
-            <div class="admin-booking-footer">
-                <button type="button" class="btn-cancel-booking" onclick="cancelBooking('${b.code}')">Cancelar</button>
-            </div>
-        `;
-        container.appendChild(card);
-    });
-}
-
-function cancelBooking(code) {
-    if (!confirm(`Deseja cancelar o agendamento ${code}?`)) return;
-
-    let bookings = JSON.parse(localStorage.getItem("client-bookings")) || [];
-    bookings = bookings.filter(b => b.code !== code);
-    localStorage.setItem("client-bookings", JSON.stringify(bookings));
-
-    // Refresh UI
-    renderAdminBookings();
-    renderAvailableSlots();
-}
-
-window.saveAdminFAQ = saveAdminFAQ;
-window.saveAdminAvailability = saveAdminAvailability;
-window.cancelBooking = cancelBooking;

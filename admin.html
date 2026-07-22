@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - Seu Site</title>
+    <!-- Google Fonts: Outfit (luxury headings) and Inter (body content) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body data-theme="light">
+    <!-- Liquid Glass SVG filter definitions -->
+    <svg style="position: absolute; width: 0; height: 0; pointer-events: none;" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <filter id="liquid-glass-filter">
+                <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="3" result="noise" seed="5"></feTurbulence>
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="8" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>
+            </filter>
+        </defs>
+    </svg>
+
+    <!-- Morphing Background Glass Sculptures -->
+    <div class="glass-sculpture sculpture-1"></div>
+    <div class="glass-sculpture sculpture-2"></div>
+    <div class="glass-sculpture sculpture-3"></div>
+
+    <div class="admin-container">
+        <!-- 1. LOGIN GATE -->
+        <div id="login-gate" class="login-gate glass-panel">
+            <span class="admin-tag">Acesso Restrito</span>
+            <h2>Área Administrativa</h2>
+            <p class="login-desc">Insira suas credenciais de gestor para acessar o painel de agendamento e controle.</p>
+
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="input-group">
+                    <label for="login-email">E-mail Corporativo</label>
+                    <input type="email" id="login-email" required placeholder="seu@email.com">
+                </div>
+                <div class="input-group">
+                    <label for="login-password">Senha de Acesso</label>
+                    <input type="password" id="login-password" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn-primary full-width">
+                    <span>Entrar no Painel</span>
+                </button>
+            </form>
+            <p id="login-error-message" class="error-text" style="display: none;">E-mail ou senha incorretos. Tente novamente.</p>
+            
+            <div class="login-footer">
+                <p>Acesso Padrão de Teste:<br>E-mail: <strong>admin@clinica.com</strong> | Senha: <strong>senha123</strong></p>
+            </div>
+        </div>
+
+        <!-- 2. MAIN ADMIN DASHBOARD -->
+        <div id="admin-dashboard" class="admin-dashboard" style="display: none;">
+            <!-- Upper Navigation Navbar -->
+            <header class="admin-header glass-panel">
+                <div class="admin-logo-area">
+                    <span class="logo-circle"></span>
+                    <h1>Seu Site <span class="logo-sub">Painel</span></h1>
+                </div>
+                <div class="admin-user-profile">
+                    <div class="user-avatar" id="header-avatar">A</div>
+                    <div class="user-info-text">
+                        <span class="user-name" id="header-username">Administrador</span>
+                        <span class="user-role">Gestor Clínico</span>
+                    </div>
+                    <button class="btn-logout" onclick="handleLogout()">Sair</button>
+                </div>
+            </header>
+
+            <!-- Dashboard Columns Layout -->
+            <div class="admin-layout">
+                <!-- Sidebar Menu Tabs -->
+                <aside class="admin-sidebar glass-panel">
+                    <nav class="sidebar-nav">
+                        <button class="sidebar-tab-btn active" id="btn-tab-prices" onclick="switchTab('prices')">
+                            <span class="nav-icon">💵</span> Valores & FAQ
+                        </button>
+                        <button class="sidebar-tab-btn" id="btn-tab-slots" onclick="switchTab('slots')">
+                            <span class="nav-icon">📅</span> Agenda & Horários
+                        </button>
+                        <button class="sidebar-tab-btn" id="btn-tab-bookings" onclick="switchTab('bookings')">
+                            <span class="nav-icon">📋</span> Agendamentos
+                        </button>
+                        <button class="sidebar-tab-btn" id="btn-tab-managers" onclick="switchTab('managers')">
+                            <span class="nav-icon">👥</span> Gestores
+                        </button>
+                    </nav>
+                </aside>
+
+                <!-- Content Area -->
+                <main class="admin-main-content">
+                    <!-- Tab 1: Prices & FAQ -->
+                    <div class="tab-content active glass-panel" id="tab-prices">
+                        <span class="content-tag">Ajustes Rápidos</span>
+                        <h2>Valores dos Serviços</h2>
+                        <p class="section-desc">Edite os custos mínimos de cada procedimento. O Chatbot AI e o Agendador serão atualizados instantaneamente.</p>
+                        
+                        <div class="admin-form-grid">
+                            <div class="input-group">
+                                <label for="input-price-harmonizacao">Preço Mínimo: Harmonização Facial (R$)</label>
+                                <input type="number" id="input-price-harmonizacao" min="0" onchange="savePrices()">
+                            </div>
+                            <div class="input-group">
+                                <label for="input-price-corporal">Preço Mínimo: Tratamentos Corporais (R$)</label>
+                                <input type="number" id="input-price-corporal" min="0" onchange="savePrices()">
+                            </div>
+                            <div class="input-group">
+                                <label for="input-price-rejuvenescimento">Preço Mínimo: Rejuvenescimento Facial (R$)</label>
+                                <input type="number" id="input-price-rejuvenescimento" min="0" onchange="savePrices()">
+                            </div>
+                        </div>
+
+                        <h2 style="margin-top: 40px;">FAQ do Assistente Virtual</h2>
+                        <p class="section-desc">Configure as respostas que a I.A do site dará aos clientes sobre informações gerais.</p>
+
+                        <div class="input-group">
+                            <label for="input-faq-address">Onde fica a clínica? (Endereço completo)</label>
+                            <textarea id="input-faq-address" rows="3" onchange="saveFAQ()"></textarea>
+                        </div>
+                        <div class="input-group">
+                            <label for="input-faq-return">Como funciona a consulta de retorno e retoques?</label>
+                            <textarea id="input-faq-return" rows="3" onchange="saveFAQ()"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Availability Calendar -->
+                    <div class="tab-content glass-panel" id="tab-slots">
+                        <span class="content-tag">Planejamento</span>
+                        <h2>Gerenciar Disponibilidade</h2>
+                        <p class="section-desc">Selecione os dias da semana e horários padrões que a clínica disponibilizará para agendamentos automáticos.</p>
+
+                        <h3 class="subsection-title">Dias de Atendimento</h3>
+                        <div class="days-checkbox-container">
+                            <label class="day-checkbox-label"><input type="checkbox" id="chk-day-1" onchange="saveAvailability()"> Segunda-Feira</label>
+                            <label class="day-checkbox-label"><input type="checkbox" id="chk-day-2" onchange="saveAvailability()"> Terça-Feira</label>
+                            <label class="day-checkbox-label"><input type="checkbox" id="chk-day-3" onchange="saveAvailability()"> Quarta-Feira</label>
+                            <label class="day-checkbox-label"><input type="checkbox" id="chk-day-4" onchange="saveAvailability()"> Quinta-Feira</label>
+                            <label class="day-checkbox-label"><input type="checkbox" id="chk-day-5" onchange="saveAvailability()"> Sexta-Feira</label>
+                            <label class="day-checkbox-label"><input type="checkbox" id="chk-day-6" onchange="saveAvailability()"> Sábado</label>
+                        </div>
+
+                        <h3 class="subsection-title" style="margin-top: 32px;">Horários Disponíveis</h3>
+                        <p class="section-desc" style="margin-bottom: 16px;">Assinale os horários padrões que ficarão disponíveis para escolha do cliente:</p>
+                        
+                        <div class="hours-grid-list" id="hours-grid-container">
+                            <!-- Hours list will be dynamically rendered here -->
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Active Client Bookings -->
+                    <div class="tab-content glass-panel" id="tab-bookings">
+                        <span class="content-tag">Reservas</span>
+                        <h2>Agendamentos Efetuados</h2>
+                        <p class="section-desc">Lista detalhada de reservas e consultas marcadas pelos clientes diretamente pelo site.</p>
+
+                        <div class="bookings-list-table" id="bookings-list-container">
+                            <!-- Active bookings will render here -->
+                        </div>
+                    </div>
+
+                    <!-- Tab 4: Managers & Administrators Management -->
+                    <div class="tab-content glass-panel" id="tab-managers">
+                        <span class="content-tag">Segurança</span>
+                        <h2>Gerenciamento de Gestores</h2>
+                        <p class="section-desc">Adicione ou remova profissionais autorizados a alterar preços, horários e visualizar os agendamentos da clínica.</p>
+
+                        <div class="managers-layout">
+                            <!-- New Manager Form -->
+                            <div class="manager-form-panel glass-panel">
+                                <h3>Adicionar Novo Gestor</h3>
+                                <form id="add-manager-form" onsubmit="addManager(event)">
+                                    <div class="input-group">
+                                        <label for="new-manager-name">Nome Completo</label>
+                                        <input type="text" id="new-manager-name" required placeholder="Nome do Gestor">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="new-manager-email">E-mail de Login</label>
+                                        <input type="email" id="new-manager-email" required placeholder="email@clinica.com">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="new-manager-password">Senha Provisória</label>
+                                        <input type="password" id="new-manager-password" required placeholder="Mínimo 6 caracteres" minlength="6">
+                                    </div>
+                                    <button type="submit" class="btn-primary full-width" style="margin-top: 12px;">
+                                        <span>Cadastrar Gestor</span>
+                                    </button>
+                                </form>
+                                <p id="add-manager-error" class="error-text" style="display: none; margin-top: 8px; font-size: 11px;"></p>
+                            </div>
+
+                            <!-- Active Managers List -->
+                            <div class="managers-list-panel">
+                                <h3>Gestores Ativos</h3>
+                                <div class="managers-grid" id="managers-list-container">
+                                    <!-- Rendered dynamically -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <!-- Background overlay light leak flare animation -->
+    <div class="light-leak-overlay"></div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

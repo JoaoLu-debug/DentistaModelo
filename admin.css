@@ -1,0 +1,563 @@
+/* ==========================================================================
+   ADMINISTRATIVE DASHBOARD SPECIFIC STYLES
+   ========================================================================== */
+
+body {
+    background: linear-gradient(135deg, #fefbfa 0%, #f7f3e8 40%, #eddca4 100%) !important;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+}
+
+body[data-theme="dark"] {
+    background: linear-gradient(135deg, #0a0d12 0%, #151a24 50%, #2a2015 100%) !important;
+}
+
+/* Glassmorphism overrides */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+}
+
+body[data-theme="dark"] .glass-panel {
+    background: rgba(15, 20, 30, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+
+.admin-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+    z-index: 10;
+}
+
+/* 1. LOGIN GATE */
+.login-gate {
+    max-width: 420px;
+    margin: 0 auto;
+    padding: 40px;
+    text-align: center;
+}
+
+.admin-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    background: rgba(196, 157, 103, 0.1);
+    color: var(--color-accent);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 700;
+    border-radius: 30px;
+    margin-bottom: 16px;
+    border: 1px solid rgba(196, 157, 103, 0.2);
+}
+
+.login-gate h2 {
+    font-family: var(--font-heading);
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--color-text-primary);
+}
+
+.login-desc {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    margin-bottom: 30px;
+}
+
+.login-footer {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+body[data-theme="dark"] .login-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.login-footer p {
+    font-size: 11px;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+}
+
+.error-text {
+    color: #e74c3c;
+    font-size: 13px;
+    margin-top: 16px;
+    font-weight: 500;
+}
+
+/* 2. MAIN ADMIN DASHBOARD */
+.admin-dashboard {
+    width: 100%;
+}
+
+.admin-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 30px;
+    margin-bottom: 24px;
+}
+
+.admin-logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-circle {
+    width: 12px;
+    height: 12px;
+    background: var(--color-accent);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--color-accent);
+}
+
+.admin-logo-area h1 {
+    font-family: var(--font-heading);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.logo-sub {
+    font-size: 11px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--color-accent);
+    background: rgba(196, 157, 103, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 6px;
+}
+
+.admin-user-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    color: white;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.user-info-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.user-role {
+    font-size: 10px;
+    color: var(--color-text-secondary);
+}
+
+.btn-logout {
+    margin-left: 12px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid #e74c3c;
+    background: rgba(231, 76, 60, 0.05);
+    color: #e74c3c;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-logout:hover {
+    background: #e74c3c;
+    color: white;
+}
+
+/* Layout columns */
+.admin-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+.admin-sidebar {
+    padding: 20px 16px;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sidebar-tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    background: none;
+    color: var(--color-text-secondary);
+    font-family: var(--font-primary);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.3s ease;
+}
+
+.sidebar-tab-btn:hover {
+    background: rgba(196, 157, 103, 0.06);
+    color: var(--color-accent);
+}
+
+.sidebar-tab-btn.active {
+    background: var(--color-text-primary);
+    color: var(--bg-main);
+    font-weight: 600;
+}
+
+body[data-theme="dark"] .sidebar-tab-btn.active {
+    background: var(--color-text-primary);
+    color: var(--bg-main);
+}
+
+.nav-icon {
+    font-size: 16px;
+}
+
+/* Main Content elements */
+.admin-main-content {
+    min-height: 500px;
+}
+
+.tab-content {
+    display: none;
+    padding: 40px;
+}
+
+.tab-content.active {
+    display: block;
+    animation: slideUpTab 0.4s ease forwards;
+}
+
+@keyframes slideUpTab {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.content-tag {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--color-accent);
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.admin-main-content h2 {
+    font-family: var(--font-heading);
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 8px;
+}
+
+.section-desc {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    margin-bottom: 32px;
+    max-width: 700px;
+}
+
+.subsection-title {
+    font-family: var(--font-heading);
+    font-size: 18px;
+    color: var(--color-text-primary);
+    margin-bottom: 16px;
+}
+
+.admin-form-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+/* Tab 2 availability checkbox arrays */
+.days-checkbox-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.days-checkbox-container .day-checkbox-label {
+    padding: 10px 16px;
+    background: rgba(0,0,0,0.02);
+    border: 1px solid rgba(0,0,0,0.05);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+body[data-theme="dark"] .days-checkbox-container .day-checkbox-label {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.days-checkbox-container input[type="checkbox"] {
+    accent-color: var(--color-accent);
+    width: 16px;
+    height: 16px;
+}
+
+.hours-grid-list {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+}
+
+.hours-grid-list .hour-checkbox-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px;
+    background: rgba(0,0,0,0.01);
+    border: 1px solid rgba(0,0,0,0.04);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+body[data-theme="dark"] .hours-grid-list .hour-checkbox-label {
+    background: rgba(255,255,255,0.01);
+    border: 1px solid rgba(255,255,255,0.04);
+}
+
+.hours-grid-list input {
+    accent-color: var(--color-accent);
+}
+
+/* Tab 3 Bookings layout styling */
+.bookings-list-table {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 600px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.booking-item-card {
+    display: grid;
+    grid-template-columns: 1.5fr 1.5fr 1fr 1fr 0.5fr;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(0,0,0,0.04);
+    background: rgba(255, 255, 255, 0.35);
+}
+
+body[data-theme="dark"] .booking-item-card {
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    background: rgba(0, 0, 0, 0.15);
+}
+
+.booking-client-info h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0 0 2px 0;
+}
+
+.booking-client-info span {
+    font-size: 11px;
+    color: var(--color-text-secondary);
+}
+
+.booking-service-badge {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-accent);
+}
+
+.booking-time-details p {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.booking-time-details span {
+    font-size: 11px;
+    color: var(--color-text-secondary);
+}
+
+.booking-price-details {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+/* Tab 4 Managers elements styling */
+.managers-layout {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 24px;
+}
+
+.manager-form-panel {
+    padding: 24px;
+    border: 1px solid rgba(0,0,0,0.03);
+}
+
+.manager-form-panel h3 {
+    font-family: var(--font-heading);
+    font-size: 16px;
+    margin-bottom: 16px;
+    color: var(--color-text-primary);
+}
+
+.managers-list-panel h3 {
+    font-family: var(--font-heading);
+    font-size: 16px;
+    margin-bottom: 16px;
+    color: var(--color-text-primary);
+}
+
+.managers-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    max-height: 480px;
+    overflow-y: auto;
+}
+
+.manager-card {
+    padding: 16px 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(0,0,0,0.04);
+    background: rgba(255,255,255,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+body[data-theme="dark"] .manager-card {
+    border: 1px solid rgba(255,255,255,0.04);
+    background: rgba(0,0,0,0.25);
+}
+
+.manager-avatar-badge {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(196, 157, 103, 0.1);
+    color: var(--color-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    font-family: var(--font-heading);
+}
+
+.manager-profile-details {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.manager-profile-details strong {
+    font-size: 13px;
+    color: var(--color-text-primary);
+}
+
+.manager-profile-details span {
+    font-size: 11px;
+    color: var(--color-text-secondary);
+}
+
+.btn-remove-manager {
+    border: none;
+    background: none;
+    color: #e74c3c;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.btn-remove-manager:hover {
+    transform: scale(1.2);
+}
+
+/* Responsive configurations */
+@media (max-width: 1024px) {
+    .admin-layout {
+        grid-template-columns: 1fr;
+    }
+    .managers-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-form-grid {
+        grid-template-columns: 1fr;
+    }
+    .hours-grid-list {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .booking-item-card {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        text-align: center;
+    }
+    .booking-item-card button {
+        margin: 0 auto;
+    }
+    .managers-grid {
+        grid-template-columns: 1fr;
+    }
+}
