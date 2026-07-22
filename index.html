@@ -69,9 +69,9 @@
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
                     </span>
                 </button>
-                <a href="https://wa.me/5511999999999?text=Ol%C3%A1%2C+gostaria+de+agendar+uma+consulta+de+est%C3%A9tica+premium." target="_blank" class="btn-primary" id="btn-header-cta">
+                <button onclick="openDrawer('booking')" class="btn-primary" id="btn-header-cta">
                     <span>Agendar Consulta</span>
-                </a>
+                </button>
                 <button class="mobile-menu-toggle" id="mobile-toggle" aria-label="Abrir menu">
                     <span></span>
                     <span></span>
@@ -93,9 +93,9 @@
                     Protocolos exclusivos e tecnologia de ponta para resultados refinados que valorizam sua essência. Sinta a verdadeira experiência do cuidado de luxo.
                 </p>
                 <div class="hero-actions">
-                    <a href="https://wa.me/5511999999999?text=Ol%C3%A1%2C+gostaria+de+agendar+uma+consulta+de+est%C3%A9tica+premium." target="_blank" class="btn-primary hover-refract">
+                    <button onclick="openDrawer('booking')" class="btn-primary hover-refract">
                         <span>Agendar Agora</span>
-                    </a>
+                    </button>
                     <a href="#especialidades" class="btn-secondary glass-panel">
                         <span>Conhecer Especialidades</span>
                     </a>
@@ -420,6 +420,7 @@
     <!-- Footer -->
     <footer class="main-footer">
         <p>&copy; 2026 Seu Site Estética e Saúde. Todos os direitos reservados. Desenvolvido com Estética Refrativa de Luxo.</p>
+        <p style="margin-top: 12px; font-size: 11px;"><a href="#" onclick="openDrawer('admin'); return false;" style="color: var(--color-accent); text-decoration: underline;">Painel do Profissional (Admin)</a></p>
     </footer>
 
     <!-- Specialty Detail Drawers (Laterais / Sliders) -->
@@ -542,28 +543,240 @@
         </div>
     </div>
 
-    <!-- Drawer: Diagnostic Simulator Result Details -->
-    <div class="drawer glass-panel" id="drawer-diagnostic">
+    <!-- Drawer: Direct Booking Wizard -->
+    <div class="drawer glass-panel" id="drawer-booking">
         <button class="drawer-close" onclick="closeAllDrawers()">&times;</button>
         <div class="drawer-content">
-            <span class="drawer-tag">Diagnóstico Exclusivo</span>
-            <h2>Seu Cronograma Sugerido</h2>
-            <div class="diagnostic-summary-box glass-panel">
-                <h4>Status do Diagnóstico</h4>
-                <p id="diag-summary-text">Avaliando parâmetros de sustentação, linhas e viço.</p>
-            </div>
+            <span class="drawer-tag">Agendamento Online</span>
+            <h2>Agende seu Horário</h2>
             
-            <div class="diagnostic-details-list" id="diag-details-list">
-                <!-- Dynamically filled by JS based on slider configuration -->
+            <div class="booking-wizard">
+                <!-- Step Progress Indicator -->
+                <div class="wizard-steps">
+                    <span class="step active" id="step-dot-1">1</span>
+                    <span class="step-line"></span>
+                    <span class="step" id="step-dot-2">2</span>
+                    <span class="step-line"></span>
+                    <span class="step" id="step-dot-3">3</span>
+                </div>
+
+                <!-- Step 1: Service Selection -->
+                <div class="wizard-tab active" id="booking-step-1">
+                    <h3>1. Selecione o Tratamento</h3>
+                    <div class="booking-services-list">
+                        <label class="booking-service-option glass-panel">
+                            <input type="radio" name="booking-service" value="harmonizacao" checked onchange="updateBookingServiceSelection()">
+                            <div class="service-option-details">
+                                <strong>Harmonização Facial</strong>
+                                <span class="service-price" id="book-price-harmonizacao">A partir de R$ 1.500</span>
+                            </div>
+                        </label>
+                        <label class="booking-service-option glass-panel">
+                            <input type="radio" name="booking-service" value="corporal" onchange="updateBookingServiceSelection()">
+                            <div class="service-option-details">
+                                <strong>Tratamentos Corporais</strong>
+                                <span class="service-price" id="book-price-corporal">A partir de R$ 800</span>
+                            </div>
+                        </label>
+                        <label class="booking-service-option glass-panel">
+                            <input type="radio" name="booking-service" value="rejuvenescimento" onchange="updateBookingServiceSelection()">
+                            <div class="service-option-details">
+                                <strong>Rejuvenescimento Facial</strong>
+                                <span class="service-price" id="book-price-rejuvenescimento">A partir de R$ 1.200</span>
+                            </div>
+                        </label>
+                    </div>
+                    <button class="btn-primary full-width text-center" style="margin-top: 24px;" onclick="goToBookingStep(2)">
+                        <span>Avançar para Data e Hora</span>
+                    </button>
+                </div>
+
+                <!-- Step 2: Date and Time Selection -->
+                <div class="wizard-tab" id="booking-step-2">
+                    <h3>2. Escolha Data e Horário</h3>
+                    
+                    <div class="input-group">
+                        <label for="booking-date">Data de Preferência</label>
+                        <input type="date" id="booking-date" onchange="renderAvailableSlots()">
+                    </div>
+
+                    <label class="input-group-label" style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--color-text-secondary); margin-bottom: 8px; display: block;">Horários Disponíveis</label>
+                    <div class="booking-slots-grid" id="booking-slots-container">
+                        <!-- Dynamically rendered slots -->
+                        <p class="no-slots-message">Selecione uma data para ver os horários.</p>
+                    </div>
+
+                    <div class="wizard-actions" style="margin-top: 24px; display: flex; gap: 16px;">
+                         <button type="button" class="btn-secondary glass-panel full-width" onclick="goToBookingStep(1)"><span>Voltar</span></button>
+                         <button type="button" class="btn-primary full-width" onclick="goToBookingStep(3)"><span>Avançar</span></button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Client Info & Submit -->
+                <div class="wizard-tab" id="booking-step-3">
+                    <h3>3. Confirme seus Dados</h3>
+                    
+                    <div class="booking-summary-ticket glass-panel" style="margin-bottom: 24px; padding: 20px;">
+                        <h4 id="summary-service-title">Harmonização Facial</h4>
+                        <p id="summary-datetime">Aguardando seleção...</p>
+                        <strong id="summary-price" style="color: var(--color-accent); font-size: 18px; display: block; margin-top: 8px;">R$ 1.500</strong>
+                    </div>
+
+                    <form id="booking-form" onsubmit="submitBooking(event)">
+                        <div class="input-group">
+                            <label for="booking-name">Nome Completo</label>
+                            <input type="text" id="booking-name" required placeholder="Seu nome">
+                        </div>
+                        <div class="input-group">
+                            <label for="booking-phone">WhatsApp</label>
+                            <input type="tel" id="booking-phone" required placeholder="(11) 99999-9999">
+                        </div>
+                        <div class="input-group">
+                            <label for="booking-email">E-mail</label>
+                            <input type="email" id="booking-email" required placeholder="seu@email.com">
+                        </div>
+                        <div class="wizard-actions" style="margin-top: 24px; display: flex; gap: 16px;">
+                            <button type="button" class="btn-secondary glass-panel full-width" onclick="goToBookingStep(2)"><span>Voltar</span></button>
+                            <button type="submit" class="btn-primary full-width"><span>Confirmar Agendamento</span></button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Success Screen -->
+                <div class="wizard-tab" id="booking-step-success" style="text-align: center; padding: 20px 0;">
+                    <div class="success-icon" style="background: rgba(46, 204, 113, 0.1); color: #2ecc71; width: 60px; height: 60px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 20px;">✓</div>
+                    <h3>Agendamento Confirmado!</h3>
+                    <p style="color: var(--color-text-secondary); margin-bottom: 24px; font-size: 14px;">Seu horário foi reservado sem filas. Em breve, enviaremos um lembrete no seu WhatsApp.</p>
+                    
+                    <div class="booking-receipt glass-panel" style="padding: 20px; text-align: left; margin-bottom: 32px;">
+                        <p><strong>Código:</strong> <span id="receipt-code">#A8F2K</span></p>
+                        <p><strong>Procedimento:</strong> <span id="receipt-service">Harmonização Facial</span></p>
+                        <p><strong>Data/Hora:</strong> <span id="receipt-datetime">23/07/2026 às 14:00</span></p>
+                        <p><strong>Valor:</strong> <span id="receipt-price" style="color: var(--color-accent); font-weight: 600;">R$ 1.500</span></p>
+                    </div>
+                    
+                    <button type="button" class="btn-primary full-width text-center" onclick="closeAllDrawers()">
+                        <span>Concluir</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Drawer: Professional Administrative Panel -->
+    <div class="drawer glass-panel" id="drawer-admin">
+        <button class="drawer-close" onclick="closeAllDrawers()">&times;</button>
+        <div class="drawer-content">
+            <span class="drawer-tag">Painel de Controle</span>
+            <h2>Área Administrativa</h2>
+            
+            <div class="admin-tabs" style="display: flex; gap: 8px; margin-bottom: 24px;">
+                <button class="admin-tab-btn active" id="btn-tab-prices" onclick="switchAdminTab('prices')">Valores</button>
+                <button class="admin-tab-btn" id="btn-tab-slots" onclick="switchAdminTab('slots')">Agenda</button>
+                <button class="admin-tab-btn" id="btn-tab-bookings" onclick="switchAdminTab('bookings')">Agendamentos</button>
             </div>
 
-            <div class="clinic-assurance glass-panel">
-                <p><strong>Nota de Segurança:</strong> Este simulador oferece uma recomendação preliminar baseada em parâmetros estéticos comuns. Uma consulta clínica presencial com nossos especialistas é indispensável para traçar o plano definitivo.</p>
+            <!-- Admin Tab 1: Prices & Services -->
+            <div class="admin-tab-content active" id="admin-tab-prices">
+                <h3>Configurar Valores dos Serviços</h3>
+                <p style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 20px;">Edite os custos mínimos de cada procedimento. O Chatbot AI e o Agendador serão atualizados instantaneamente.</p>
+                
+                <div class="input-group">
+                    <label for="admin-price-harmonizacao">Preço Mínimo: Harmonização Facial</label>
+                    <input type="number" id="admin-price-harmonizacao" min="0" onchange="saveAdminPrices()">
+                </div>
+                <div class="input-group">
+                    <label for="admin-price-corporal">Preço Mínimo: Tratamentos Corporais</label>
+                    <input type="number" id="admin-price-corporal" min="0" onchange="saveAdminPrices()">
+                </div>
+                <div class="input-group">
+                    <label for="admin-price-rejuvenescimento">Preço Mínimo: Rejuvenescimento Facial</label>
+                    <input type="number" id="admin-price-rejuvenescimento" min="0" onchange="saveAdminPrices()">
+                </div>
+                
+                <h3 style="margin-top: 32px;">Configurar FAQ do Chatbot AI</h3>
+                <p style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 20px;">Edite as respostas automáticas para dúvidas gerais.</p>
+                
+                <div class="input-group">
+                    <label for="admin-faq-endereco">Onde fica a clínica? (Endereço)</label>
+                    <textarea id="admin-faq-endereco" rows="2" onchange="saveAdminFAQ()"></textarea>
+                </div>
+                <div class="input-group">
+                    <label for="admin-faq-retorno">Como funciona a consulta de retorno?</label>
+                    <textarea id="admin-faq-retorno" rows="2" onchange="saveAdminFAQ()"></textarea>
+                </div>
             </div>
 
-            <button class="btn-primary full-width text-center" onclick="sendDiagnosticToWhatsApp()">
-                <span>Enviar Diagnóstico e Agendar via WhatsApp</span>
-            </button>
+            <!-- Admin Tab 2: Availability Calendar -->
+            <div class="admin-tab-content" id="admin-tab-slots">
+                <h3>Gerenciar Disponibilidade</h3>
+                <p style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 20px;">Selecione os dias da semana e horários padrões em que a clínica está aberta para agendamentos online.</p>
+                
+                <label class="input-group-label" style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--color-text-secondary); margin-bottom: 12px; display: block;">Dias de Atendimento</label>
+                <div class="admin-days-grid" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px;">
+                    <label class="day-checkbox-label"><input type="checkbox" id="check-day-1" onchange="saveAdminAvailability()"> Seg</label>
+                    <label class="day-checkbox-label"><input type="checkbox" id="check-day-2" onchange="saveAdminAvailability()"> Ter</label>
+                    <label class="day-checkbox-label"><input type="checkbox" id="check-day-3" onchange="saveAdminAvailability()"> Qua</label>
+                    <label class="day-checkbox-label"><input type="checkbox" id="check-day-4" onchange="saveAdminAvailability()"> Qui</label>
+                    <label class="day-checkbox-label"><input type="checkbox" id="check-day-5" onchange="saveAdminAvailability()"> Sex</label>
+                    <label class="day-checkbox-label"><input type="checkbox" id="check-day-6" onchange="saveAdminAvailability()"> Sáb</label>
+                </div>
+
+                <label class="input-group-label" style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--color-text-secondary); margin-bottom: 12px; display: block;">Horários Padrões</label>
+                <div class="admin-hours-list" id="admin-hours-container" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+                    <!-- Checked hours will be rendered here -->
+                </div>
+            </div>
+
+            <!-- Admin Tab 3: Active Client Bookings -->
+            <div class="admin-tab-content" id="admin-tab-bookings">
+                <h3>Agendamentos Efetuados</h3>
+                <p style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 20px;">Lista de horários reservados por clientes diretamente pelo site.</p>
+                
+                <div class="admin-bookings-list" id="admin-bookings-container">
+                    <p class="no-bookings-message">Nenhum agendamento realizado até o momento.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating AI Chatbot Widget -->
+    <div class="ai-chat-widget" id="ai-chat-widget">
+        <button class="chat-trigger glass-panel" id="chat-trigger" aria-label="Abrir assistente virtual">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <span class="chat-badge" id="chat-badge-bubble">1</span>
+        </button>
+        <div class="chat-window glass-panel" id="chat-window">
+            <div class="chat-header">
+                <div class="chat-avatar">AI</div>
+                <div class="chat-status-info">
+                    <h4>Assistente Concierge AI</h4>
+                    <span>Online | Responde na hora</span>
+                </div>
+                <button class="chat-close" id="chat-close-btn">&times;</button>
+            </div>
+            <div class="chat-messages" id="chat-messages">
+                <div class="chat-msg bot">
+                    <p>Olá! Sou o Concierge Virtual do Seu Site. Posso tirar dúvidas sobre nossos tratamentos, preços e horários disponíveis. Como posso ajudar?</p>
+                </div>
+            </div>
+            <div class="chat-chips" id="chat-chips">
+                <button onclick="sendQuickMessage('Quais são os serviços?')">Serviços</button>
+                <button onclick="sendQuickMessage('Quanto custa a Harmonização?')">Preços</button>
+                <button onclick="sendQuickMessage('Quais horários livres vocês têm?')">Horários Livres</button>
+                <button onclick="openBookingFromChat()">Agendar Direto</button>
+            </div>
+            <form class="chat-input-area" id="chat-input-form" onsubmit="handleChatSubmit(event)">
+                <input type="text" id="chat-input-field" placeholder="Pergunte sobre preços, horários..." autocomplete="off">
+                <button type="submit" aria-label="Enviar mensagem">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </form>
         </div>
     </div>
 

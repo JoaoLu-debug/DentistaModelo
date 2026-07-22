@@ -8,6 +8,10 @@ document.addEventListener("DOMContentLoaded", () => {
     init3DTiltAndSpotlight();
     initDiagnosticSimulator();
     initScrollAnimations();
+    initLocalDatabase();
+    initBookingWizard();
+    initAIChatbot();
+    initAdminPanel();
 });
 
 // 1. Theme Management (Pearlescent Light vs Midnight Obsidian)
@@ -306,3 +310,564 @@ function initScrollAnimations() {
         }
     });
 }
+
+// ==========================================================================
+// 8. Local Storage Database Management
+// ==========================================================================
+function initLocalDatabase() {
+    // Initial Defaults
+    const defaultPrices = {
+        harmonizacao: 1500,
+        corporal: 800,
+        rejuvenescimento: 1200
+    };
+
+    const defaultAvailability = {
+        days: [1, 2, 3, 4, 5], // Monday - Friday
+        hours: ["09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00", "17:00"]
+    };
+
+    const defaultFAQ = {
+        address: "Av. Paulista, 1000 - Cj. 1201, Jardins, São Paulo - SP",
+        returnPolicy: "A primeira consulta de retorno é gratuita e realizada 15 dias após o procedimento principal para avaliar os resultados e realizar eventuais retoques."
+    };
+
+    if (!localStorage.getItem("admin-prices")) {
+        localStorage.setItem("admin-prices", JSON.stringify(defaultPrices));
+    }
+    if (!localStorage.getItem("admin-availability")) {
+        localStorage.setItem("admin-availability", JSON.stringify(defaultAvailability));
+    }
+    if (!localStorage.getItem("admin-faq")) {
+        localStorage.setItem("admin-faq", JSON.stringify(defaultFAQ));
+    }
+    if (!localStorage.getItem("client-bookings")) {
+        localStorage.setItem("client-bookings", JSON.stringify([]));
+    }
+
+    // Apply active prices to visual cards in wizard
+    syncWizardPrices();
+}
+
+function syncWizardPrices() {
+    const prices = JSON.parse(localStorage.getItem("admin-prices"));
+    const priceHarmonizacao = document.getElementById("book-price-harmonizacao");
+    const priceCorporal = document.getElementById("book-price-corporal");
+    const priceRejuvenescimento = document.getElementById("book-price-rejuvenescimento");
+
+    if (priceHarmonizacao) priceHarmonizacao.textContent = `A partir de R$ ${prices.harmonizacao}`;
+    if (priceCorporal) priceCorporal.textContent = `A partir de R$ ${prices.corporal}`;
+    if (priceRejuvenescimento) priceRejuvenescimento.textContent = `A partir de R$ ${prices.rejuvenescimento}`;
+}
+
+// ==========================================================================
+// 9. Online Booking Wizard Logic
+// ==========================================================================
+let bookingState = {
+    step: 1,
+    service: 'harmonizacao',
+    date: '',
+    slot: '',
+    price: 1500
+};
+
+function initBookingWizard() {
+    // Set Date input minimum value to today
+    const dateInput = document.getElementById("booking-date");
+    if (dateInput) {
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.min = today;
+    }
+}
+
+function updateBookingServiceSelection() {
+    const radios = document.getElementsByName("booking-service");
+    for (let r of radios) {
+        if (r.checked) {
+            bookingState.service = r.value;
+            break;
+        }
+    }
+}
+
+function goToBookingStep(step) {
+    if (step === 2) {
+        updateBookingServiceSelection();
+        // Check active prices
+        const prices = JSON.parse(localStorage.getItem("admin-prices"));
+        bookingState.price = prices[bookingState.service];
+    }
+    
+    if (step === 3) {
+        // Validation: Date & Time slot must be chosen
+        if (!bookingState.date) {
+            alert("Por favor, selecione uma data.");
+            return;
+        }
+        if (!bookingState.slot) {
+            alert("Por favor, selecione um horário.");
+            return;
+        }
+
+        // Render Summary Ticket
+        const serviceTitles = {
+            harmonizacao: "Harmonização Facial",
+            corporal: "Tratamentos Corporais",
+            rejuvenescimento: "Rejuvenescimento Facial"
+        };
+
+        const serviceTitle = document.getElementById("summary-service-title");
+        const summaryDatetime = document.getElementById("summary-datetime");
+        const summaryPrice = document.getElementById("summary-price");
+
+        if (serviceTitle) serviceTitle.textContent = serviceTitles[bookingState.service];
+        if (summaryPrice) summaryPrice.textContent = `R$ ${bookingState.price}`;
+        
+        // Format Date
+        const dateParts = bookingState.date.split('-');
+        const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+        if (summaryDatetime) summaryDatetime.innerHTML = `Agendado para: <strong>${formattedDate} às ${bookingState.slot}</strong>`;
+    }
+
+    // Toggle dots
+    document.querySelectorAll(".wizard-steps .step").forEach(dot => dot.classList.remove("active", "completed"));
+    for (let i = 1; i <= 3; i++) {
+        const dot = document.getElementById(`step-dot-${i}`);
+        if (i < step) {
+            dot.classList.add("completed");
+        } else if (i === step) {
+            dot.classList.add("active");
+        }
+    }
+
+    // Toggle tabs
+    document.querySelectorAll(".wizard-tab").forEach(tab => tab.classList.remove("active"));
+    document.getElementById(`booking-step-${step}`).classList.add("active");
+    
+    bookingState.step = step;
+}
+
+function renderAvailableSlots() {
+    const dateInput = document.getElementById("booking-date");
+    const slotsContainer = document.getElementById("booking-slots-container");
+    
+    if (!dateInput || !slotsContainer) return;
+
+    bookingState.date = dateInput.value;
+    bookingState.slot = ""; // Reset chosen slot
+
+    if (!bookingState.date) {
+        slotsContainer.innerHTML = `<p class="no-slots-message">Selecione uma data para ver os horários.</p>`;
+        return;
+    }
+
+    // Check Day of Week availability
+    const selectedDay = new Date(bookingState.date + 'T00:00:00').getDay(); // 0 is Sunday, 1 is Monday, etc.
+    const availability = JSON.parse(localStorage.getItem("admin-availability"));
+    
+    if (!availability.days.includes(selectedDay)) {
+        slotsContainer.innerHTML = `<p class="no-slots-message" style="color: #e74c3c;">A clínica não realiza atendimentos online neste dia da semana.</p>`;
+        return;
+    }
+
+    // Get Booked Hours for this date
+    const bookings = JSON.parse(localStorage.getItem("client-bookings")) || [];
+    const bookedSlotsOnDate = bookings
+        .filter(b => b.date === bookingState.date)
+        .map(b => b.slot);
+
+    slotsContainer.innerHTML = "";
+
+    const availableHours = availability.hours.filter(h => !bookedSlotsOnDate.includes(h));
+
+    if (availableHours.length === 0) {
+        slotsContainer.innerHTML = `<p class="no-slots-message" style="color: #e74c3c;">Desculpe, todos os horários deste dia já estão agendados.</p>`;
+        return;
+    }
+
+    availableHours.forEach(hour => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "slot-btn";
+        btn.textContent = hour;
+        btn.onclick = () => {
+            document.querySelectorAll(".slot-btn").forEach(b => b.classList.remove("selected"));
+            btn.classList.add("selected");
+            bookingState.slot = hour;
+        };
+        slotsContainer.appendChild(btn);
+    });
+}
+
+function submitBooking(event) {
+    event.preventDefault();
+
+    const name = document.getElementById("booking-name").value;
+    const phone = document.getElementById("booking-phone").value;
+    const email = document.getElementById("booking-email").value;
+
+    if (!name || !phone || !email) {
+        alert("Preencha todos os campos.");
+        return;
+    }
+
+    // Generate random booking code
+    const code = "#" + Math.random().toString(36).substr(2, 5).toUpperCase();
+
+    // Create booking object
+    const newBooking = {
+        code,
+        name,
+        phone,
+        email,
+        service: bookingState.service,
+        date: bookingState.date,
+        slot: bookingState.slot,
+        price: bookingState.price
+    };
+
+    // Save to Local DB
+    const bookings = JSON.parse(localStorage.getItem("client-bookings")) || [];
+    bookings.push(newBooking);
+    localStorage.setItem("client-bookings", JSON.stringify(bookings));
+
+    // Render receipt details
+    const serviceNames = {
+        harmonizacao: "Harmonização Facial",
+        corporal: "Tratamentos Corporais",
+        rejuvenescimento: "Rejuvenescimento Facial"
+    };
+
+    const dateParts = bookingState.date.split('-');
+    const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+
+    document.getElementById("receipt-code").textContent = code;
+    document.getElementById("receipt-service").textContent = serviceNames[bookingState.service];
+    document.getElementById("receipt-datetime").textContent = `${formattedDate} às ${bookingState.slot}`;
+    document.getElementById("receipt-price").textContent = `R$ ${bookingState.price}`;
+
+    // Switch tab to success screen
+    document.querySelectorAll(".wizard-tab").forEach(tab => tab.classList.remove("active"));
+    document.getElementById("booking-step-success").classList.add("active");
+
+    // Sync admin bookings view
+    renderAdminBookings();
+    
+    // Reset wizard fields
+    document.getElementById("booking-form").reset();
+    document.getElementById("booking-date").value = "";
+    document.getElementById("booking-slots-container").innerHTML = `<p class="no-slots-message">Selecione uma data para ver os horários.</p>`;
+}
+
+// ==========================================================================
+// 10. AI Chatbot Concierge Logic
+// ==========================================================================
+function initAIChatbot() {
+    const trigger = document.getElementById("chat-trigger");
+    const closeBtn = document.getElementById("chat-close-btn");
+    const windowEl = document.getElementById("chat-window");
+
+    if (trigger && closeBtn && windowEl) {
+        trigger.addEventListener("click", () => {
+            windowEl.classList.toggle("active");
+            document.getElementById("chat-badge-bubble").style.display = "none"; // hide unread badge
+        });
+
+        closeBtn.addEventListener("click", () => {
+            windowEl.classList.remove("active");
+        });
+    }
+}
+
+function openBookingFromChat() {
+    const windowEl = document.getElementById("chat-window");
+    if (windowEl) windowEl.classList.remove("active");
+    openDrawer("booking");
+}
+
+function sendQuickMessage(text) {
+    appendChatMessage(text, "user");
+    generateAIResponse(text);
+}
+
+function handleChatSubmit(event) {
+    event.preventDefault();
+    const input = document.getElementById("chat-input-field");
+    const text = input.value.trim();
+    if (!text) return;
+
+    appendChatMessage(text, "user");
+    input.value = "";
+    generateAIResponse(text);
+}
+
+function appendChatMessage(text, sender) {
+    const container = document.getElementById("chat-messages");
+    if (!container) return;
+
+    const msg = document.createElement("div");
+    msg.className = `chat-msg ${sender}`;
+    msg.innerHTML = `<p>${text}</p>`;
+    container.appendChild(msg);
+
+    // Scroll to bottom
+    container.scrollTop = container.scrollHeight;
+}
+
+function generateAIResponse(query) {
+    const container = document.getElementById("chat-messages");
+    if (!container) return;
+
+    // Show Typing Indicator
+    const typing = document.createElement("div");
+    typing.className = "chat-msg bot typing-indicator";
+    typing.innerHTML = `<p style="font-style: italic; color: var(--color-text-secondary);">Digitando...</p>`;
+    container.appendChild(typing);
+    container.scrollTop = container.scrollHeight;
+
+    setTimeout(() => {
+        // Remove typing indicator
+        typing.remove();
+        
+        const responseText = getAIResponseText(query);
+        appendChatMessage(responseText, "bot");
+    }, 800);
+}
+
+function getAIResponseText(query) {
+    const clean = query.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    
+    // Fetch local settings
+    const prices = JSON.parse(localStorage.getItem("admin-prices"));
+    const faq = JSON.parse(localStorage.getItem("admin-faq"));
+    const availability = JSON.parse(localStorage.getItem("admin-availability"));
+
+    // Services match
+    if (clean.includes("servico") || clean.includes("tratamento") || clean.includes("procedimento") || clean.includes("faz") || clean.includes("oferece")) {
+        return `Nossos procedimentos exclusivos de estética incluem:<br>
+        1. <strong>Harmonização Facial:</strong> Técnicas sob medida para equilibrar os contornos.<br>
+        2. <strong>Tratamentos Corporais:</strong> Redução de medidas e firmeza cutânea.<br>
+        3. <strong>Rejuvenescimento Facial:</strong> Foco em viço e produção natural de colágeno.`;
+    }
+
+    // Prices match
+    if (clean.includes("preco") || clean.includes("custo") || clean.includes("valor") || clean.includes("quanto") || clean.includes("orcamento") || clean.includes("pagar")) {
+        if (clean.includes("harmoniza")) {
+            return `A <strong>Harmonização Facial</strong> no Seu Site está configurada a partir de R$ ${prices.harmonizacao}. O valor definitivo depende da avaliação.`;
+        }
+        if (clean.includes("corporal") || clean.includes("corpo")) {
+            return `Nossos <strong>Tratamentos Corporais</strong> de alta performance partem de R$ ${prices.corporal}.`;
+        }
+        if (clean.includes("rejuvenesc") || clean.includes("colageno") || clean.includes("laser") || clean.includes("peeling")) {
+            return `O <strong>Rejuvenescimento Facial</strong> está a partir de R$ ${prices.rejuvenescimento} no momento.`;
+        }
+        return `Aqui estão os valores básicos de nossos tratamentos:<br>
+        - Harmonização Facial: A partir de R$ ${prices.harmonizacao}<br>
+        - Tratamentos Corporais: A partir de R$ ${prices.corporal}<br>
+        - Rejuvenescimento Facial: A partir de R$ ${prices.rejuvenescimento}<br><br>
+        Deseja realizar o agendamento de algum deles diretamente? Clique no chip "Agendar Direto" acima!`;
+    }
+
+    // Availability / Hours match
+    if (clean.includes("horario") || clean.includes("agenda") || clean.includes("data") || clean.includes("dia") || clean.includes("consulta") || clean.includes("marcar") || clean.includes("livre") || clean.includes("vaga")) {
+        const daysMap = { 1: "Segunda", 2: "Terça", 3: "Quarta", 4: "Quinta", 5: "Sexta", 6: "Sábado", 0: "Domingo" };
+        const activeDays = availability.days.map(d => daysMap[d]).join(", ");
+        return `Atendemos nos dias: <strong>${activeDays}</strong>.<br>
+        Você pode ver todos os horários livres e escolher o seu diretamente na nossa agenda integrada clicando no botão <strong>'Agendar Direto'</strong> acima!`;
+    }
+
+    // Address match
+    if (clean.includes("onde") || clean.includes("endereco") || clean.includes("fica") || clean.includes("local") || clean.includes("rua") || clean.includes("bairro") || clean.includes("clinica")) {
+        return `Nossa clínica exclusiva está localizada no endereço:<br><strong>${faq.address}</strong>.`;
+    }
+
+    // Return policy match
+    if (clean.includes("retorno") || clean.includes("retocar") || clean.includes("retoque") || clean.includes("revisao")) {
+        return faq.returnPolicy;
+    }
+
+    // Greetings
+    if (clean.includes("ola") || clean.includes("oi") || clean.includes("bom dia") || clean.includes("boa tarde") || clean.includes("boa noite")) {
+        return `Olá! Como posso ajudar você hoje? Posso passar detalhes de serviços, custos, endereço ou ajudar no agendamento.`;
+    }
+
+    // Fallback default
+    return `Entendi sua dúvida. Como sou uma assistente virtual, consigo passar informações programadas sobre serviços, custos mínimos (Harmonização: R$ ${prices.harmonizacao}), localização ou sobre agendamentos de consulta.<br><br>Gostaria de agendar um horário sem fila? Clique no chip <strong>'Agendar Direto'</strong>!`;
+}
+
+// ==========================================================================
+// 11. Professional Administrative Control Panel Logic
+// ==========================================================================
+function initAdminPanel() {
+    loadAdminData();
+    renderAdminBookings();
+}
+
+function switchAdminTab(tabName) {
+    document.querySelectorAll(".admin-tab-btn").forEach(btn => btn.classList.remove("active"));
+    document.querySelectorAll(".admin-tab-content").forEach(content => content.classList.remove("active"));
+
+    document.getElementById(`btn-tab-${tabName}`).classList.add("active");
+    document.getElementById(`admin-tab-${tabName}`).classList.add("active");
+}
+
+function loadAdminData() {
+    const prices = JSON.parse(localStorage.getItem("admin-prices"));
+    const faq = JSON.parse(localStorage.getItem("admin-faq"));
+    const availability = JSON.parse(localStorage.getItem("admin-availability"));
+
+    // Populate tab 1: Prices & FAQ
+    if (prices) {
+        document.getElementById("admin-price-harmonizacao").value = prices.harmonizacao;
+        document.getElementById("admin-price-corporal").value = prices.corporal;
+        document.getElementById("admin-price-rejuvenescimento").value = prices.rejuvenescimento;
+    }
+    if (faq) {
+        document.getElementById("admin-faq-endereco").value = faq.address;
+        document.getElementById("admin-faq-retorno").value = faq.returnPolicy;
+    }
+
+    // Populate tab 2: Availability
+    if (availability) {
+        // days checkboxes (1 to 6)
+        for (let i = 1; i <= 6; i++) {
+            const chk = document.getElementById(`check-day-${i}`);
+            if (chk) chk.checked = availability.days.includes(i);
+        }
+
+        // hours rendering
+        const hoursContainer = document.getElementById("admin-hours-container");
+        if (hoursContainer) {
+            const allHours = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00"];
+            hoursContainer.innerHTML = "";
+            
+            allHours.forEach(hour => {
+                const label = document.createElement("label");
+                label.className = "hour-checkbox-label";
+                const checkedStr = availability.hours.includes(hour) ? "checked" : "";
+                label.innerHTML = `
+                    <input type="checkbox" value="${hour}" ${checkedStr} onchange="saveAdminAvailability()"> ${hour}
+                `;
+                hoursContainer.appendChild(label);
+            });
+        }
+    }
+}
+
+function saveAdminPrices() {
+    const prices = {
+        harmonizacao: parseInt(document.getElementById("admin-price-harmonizacao").value) || 0,
+        corporal: parseInt(document.getElementById("admin-price-corporal").value) || 0,
+        rejuvenescimento: parseInt(document.getElementById("admin-price-rejuvenescimento").value) || 0
+    };
+
+    localStorage.setItem("admin-prices", JSON.stringify(prices));
+    
+    // Sync UI elements
+    syncWizardPrices();
+}
+
+// Global functions exposed to window object for inline HTML event handlers
+window.openBookingFromChat = openBookingFromChat;
+window.sendQuickMessage = sendQuickMessage;
+window.handleChatSubmit = handleChatSubmit;
+window.updateBookingServiceSelection = updateBookingServiceSelection;
+window.goToBookingStep = goToBookingStep;
+window.renderAvailableSlots = renderAvailableSlots;
+window.submitBooking = submitBooking;
+window.switchAdminTab = switchAdminTab;
+window.saveAdminPrices = saveAdminPrices;
+
+function saveAdminFAQ() {
+    const faq = {
+        address: document.getElementById("admin-faq-endereco").value,
+        returnPolicy: document.getElementById("admin-faq-retorno").value
+    };
+
+    localStorage.setItem("admin-faq", JSON.stringify(faq));
+}
+
+function saveAdminAvailability() {
+    const days = [];
+    for (let i = 1; i <= 6; i++) {
+        const chk = document.getElementById(`check-day-${i}`);
+        if (chk && chk.checked) days.push(i);
+    }
+
+    const hours = [];
+    const hoursContainer = document.getElementById("admin-hours-container");
+    if (hoursContainer) {
+        const checkboxes = hoursContainer.querySelectorAll("input[type='checkbox']");
+        checkboxes.forEach(chk => {
+            if (chk.checked) hours.push(chk.value);
+        });
+    }
+
+    const availability = { days, hours };
+    localStorage.setItem("admin-availability", JSON.stringify(availability));
+    
+    // Refresh client booking options grid if open
+    renderAvailableSlots();
+}
+
+function renderAdminBookings() {
+    const bookings = JSON.parse(localStorage.getItem("client-bookings")) || [];
+    const container = document.getElementById("admin-bookings-container");
+    
+    if (!container) return;
+
+    if (bookings.length === 0) {
+        container.innerHTML = `<p class="no-bookings-message">Nenhum agendamento realizado até o momento.</p>`;
+        return;
+    }
+
+    container.innerHTML = "";
+
+    const serviceNames = {
+        harmonizacao: "Harmonização Facial",
+        corporal: "Tratamentos Corporais",
+        rejuvenescimento: "Rejuvenescimento Facial"
+    };
+
+    bookings.forEach(b => {
+        const card = document.createElement("div");
+        card.className = "admin-booking-card";
+        
+        // Format Date
+        const dateParts = b.date.split('-');
+        const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+
+        card.innerHTML = `
+            <div class="admin-booking-header">
+                <strong>${b.name}</strong>
+                <span>${b.code}</span>
+            </div>
+            <div class="admin-booking-details">
+                <p><strong>Procedimento:</strong> ${serviceNames[b.service]}</p>
+                <p><strong>Horário:</strong> ${formattedDate} às ${b.slot}</p>
+                <p><strong>Contato:</strong> ${b.phone} | ${b.email}</p>
+                <p><strong>Valor:</strong> R$ ${b.price}</p>
+            </div>
+            <div class="admin-booking-footer">
+                <button type="button" class="btn-cancel-booking" onclick="cancelBooking('${b.code}')">Cancelar</button>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+function cancelBooking(code) {
+    if (!confirm(`Deseja cancelar o agendamento ${code}?`)) return;
+
+    let bookings = JSON.parse(localStorage.getItem("client-bookings")) || [];
+    bookings = bookings.filter(b => b.code !== code);
+    localStorage.setItem("client-bookings", JSON.stringify(bookings));
+
+    // Refresh UI
+    renderAdminBookings();
+    renderAvailableSlots();
+}
+
+window.saveAdminFAQ = saveAdminFAQ;
+window.saveAdminAvailability = saveAdminAvailability;
+window.cancelBooking = cancelBooking;

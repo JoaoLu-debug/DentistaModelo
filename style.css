@@ -1763,3 +1763,651 @@ body[data-theme="dark"] .diag-detail-card {
         display: none;
     }
 }
+
+/* ==========================================================================
+   AI CONCIERGE CHATBOT WIDGET
+   ========================================================================== */
+
+.ai-chat-widget {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 1800;
+    font-family: var(--font-primary);
+}
+
+.chat-trigger {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    background: var(--color-text-primary);
+    color: var(--bg-main);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    transition: var(--transition-bounce);
+    position: relative;
+}
+
+.chat-trigger:hover {
+    transform: scale(1.1);
+}
+
+.chat-trigger::before {
+    background: var(--color-text-primary);
+}
+
+.chat-trigger svg {
+    color: var(--bg-main);
+}
+
+.chat-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #e74c3c;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--bg-main);
+    animation: badgePulse 2s infinite;
+}
+
+@keyframes badgePulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+}
+
+.chat-window {
+    position: absolute;
+    bottom: 80px;
+    right: 0;
+    width: 360px;
+    height: 500px;
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(20px) scale(0.95);
+    transition: var(--transition-smooth);
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
+}
+
+.chat-window.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+}
+
+.chat-window::before {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+}
+
+body[data-theme="dark"] .chat-window::before {
+    background: rgba(10, 13, 18, 0.75);
+}
+
+.chat-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+body[data-theme="dark"] .chat-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.chat-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    color: white;
+    font-weight: 700;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-heading);
+}
+
+.chat-status-info {
+    flex-grow: 1;
+}
+
+.chat-status-info h4 {
+    font-size: 14px;
+    line-height: 1.2;
+    color: var(--color-text-primary);
+}
+
+.chat-status-info span {
+    font-size: 11px;
+    color: var(--color-accent);
+}
+
+.chat-close {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+}
+
+.chat-messages {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.chat-msg {
+    max-width: 85%;
+    padding: 10px 14px;
+    border-radius: 16px;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.chat-msg.bot {
+    background: rgba(0, 0, 0, 0.03);
+    color: var(--color-text-primary);
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.02);
+}
+
+body[data-theme="dark"] .chat-msg.bot {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.chat-msg.user {
+    background: var(--color-text-primary);
+    color: var(--bg-main);
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+}
+
+.chat-chips {
+    display: flex;
+    gap: 6px;
+    padding: 0 20px 12px 20px;
+    overflow-x: auto;
+    scrollbar-width: none; /* Firefox */
+}
+
+.chat-chips::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+.chat-chips button {
+    padding: 6px 12px;
+    border-radius: 30px;
+    border: 1px solid var(--color-accent);
+    background: rgba(197, 160, 89, 0.08);
+    color: var(--color-accent);
+    font-size: 11px;
+    cursor: pointer;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: var(--transition-smooth);
+}
+
+.chat-chips button:hover {
+    background: var(--color-accent);
+    color: white;
+}
+
+.chat-input-area {
+    padding: 12px 20px 20px 20px;
+    border-top: 1px solid rgba(0, 0, 0, 0.04);
+    display: flex;
+    gap: 8px;
+}
+
+body[data-theme="dark"] .chat-input-area {
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.chat-input-area input {
+    flex-grow: 1;
+    padding: 10px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    background: rgba(255, 255, 255, 0.4);
+    font-size: 13px;
+    color: var(--color-text-primary);
+    outline: none;
+    transition: var(--transition-smooth);
+}
+
+body[data-theme="dark"] .chat-input-area input {
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.chat-input-area input:focus {
+    border-color: var(--color-accent);
+    background: white;
+}
+
+body[data-theme="dark"] .chat-input-area input:focus {
+    background: black;
+}
+
+.chat-input-area button {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    border: none;
+    background: var(--color-text-primary);
+    color: var(--bg-main);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.chat-input-area button:hover {
+    background: var(--color-accent);
+    color: white;
+}
+
+/* ==========================================================================
+   BOOKING WIZARD COMPONENT
+   ========================================================================== */
+
+.booking-wizard {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+.wizard-steps {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    padding: 0 10%;
+}
+
+.wizard-steps .step {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    transition: var(--transition-smooth);
+}
+
+body[data-theme="dark"] .wizard-steps .step {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.wizard-steps .step.active {
+    background: var(--color-accent);
+    color: white;
+    box-shadow: 0 0 15px rgba(197, 160, 89, 0.4);
+}
+
+.wizard-steps .step.completed {
+    background: var(--color-text-primary);
+    color: var(--bg-main);
+}
+
+.step-line {
+    flex-grow: 1;
+    height: 2px;
+    background: rgba(0, 0, 0, 0.04);
+    margin: 0 8px;
+}
+
+body[data-theme="dark"] .step-line {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.wizard-tab {
+    display: none;
+    animation: fadeInTab 0.5s ease forwards;
+}
+
+.wizard-tab.active {
+    display: block;
+}
+
+@keyframes fadeInTab {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.wizard-tab h3 {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: var(--color-text-primary);
+}
+
+.booking-services-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.booking-service-option {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    border: 1px solid rgba(0,0,0,0.03);
+}
+
+.booking-service-option::before {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.booking-service-option input[type="radio"] {
+    accent-color: var(--color-accent);
+    width: 18px;
+    height: 18px;
+}
+
+.service-option-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.service-option-details strong {
+    font-size: 14px;
+    color: var(--color-text-primary);
+}
+
+.service-price {
+    font-size: 12px;
+    color: var(--color-accent);
+    font-weight: 500;
+}
+
+/* Time slots grid styling */
+.booking-slots-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 12px;
+    max-height: 200px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.slot-btn {
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(0,0,0,0.05);
+    background: rgba(255, 255, 255, 0.3);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: var(--transition-smooth);
+    text-align: center;
+}
+
+body[data-theme="dark"] .slot-btn {
+    border: 1px solid rgba(255,255,255,0.05);
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.slot-btn:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+}
+
+.slot-btn.selected {
+    background: var(--color-accent);
+    color: white;
+    border-color: var(--color-accent);
+}
+
+.no-slots-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    padding: 24px 0;
+}
+
+/* Summary Ticket & Receipts */
+.booking-summary-ticket {
+    border: 1px dashed var(--color-accent);
+}
+
+.booking-summary-ticket::before {
+    background: rgba(197, 160, 89, 0.03);
+}
+
+.booking-summary-ticket h4 {
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.booking-summary-ticket p {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+}
+
+.booking-receipt {
+    border: 1px solid rgba(0,0,0,0.04);
+}
+
+.booking-receipt::before {
+    background: rgba(0,0,0,0.02);
+}
+
+body[data-theme="dark"] .booking-receipt::before {
+    background: rgba(255,255,255,0.02);
+}
+
+.booking-receipt p {
+    font-size: 13px;
+    margin-bottom: 8px;
+    color: var(--color-text-secondary);
+}
+
+.booking-receipt p strong {
+    color: var(--color-text-primary);
+}
+
+/* ==========================================================================
+   ADMINISTRATIVE DASHBOARD STYLES
+   ========================================================================== */
+
+.admin-tab-btn {
+    flex-grow: 1;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(0,0,0,0.04);
+    background: rgba(255, 255, 255, 0.3);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    font-size: 13px;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    transition: var(--transition-smooth);
+}
+
+body[data-theme="dark"] .admin-tab-btn {
+    border: 1px solid rgba(255,255,255,0.04);
+    background: rgba(0,0,0,0.2);
+}
+
+.admin-tab-btn.active {
+    background: var(--color-text-primary);
+    color: var(--bg-main);
+    border-color: var(--color-text-primary);
+}
+
+.admin-tab-content {
+    display: none;
+    animation: fadeInTab 0.5s ease forwards;
+}
+
+.admin-tab-content.active {
+    display: block;
+}
+
+.admin-tab-content h3 {
+    font-size: 16px;
+    margin-bottom: 8px;
+    color: var(--color-text-primary);
+}
+
+.day-checkbox-label {
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.04);
+    background: rgba(0,0,0,0.01);
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+body[data-theme="dark"] .day-checkbox-label {
+    border: 1px solid rgba(255,255,255,0.04);
+    background: rgba(255,255,255,0.01);
+}
+
+.day-checkbox-label input {
+    accent-color: var(--color-accent);
+}
+
+.admin-hours-list .hour-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    padding: 6px;
+    border-radius: 6px;
+    background: rgba(0,0,0,0.02);
+    cursor: pointer;
+}
+
+body[data-theme="dark"] .admin-hours-list .hour-checkbox-label {
+    background: rgba(255,255,255,0.02);
+}
+
+.admin-hours-list input {
+    accent-color: var(--color-accent);
+}
+
+/* Admin Bookings list card */
+.admin-bookings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.admin-booking-card {
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(0,0,0,0.04);
+    background: rgba(255, 255, 255, 0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+body[data-theme="dark"] .admin-booking-card {
+    border: 1px solid rgba(255,255,255,0.04);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.admin-booking-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.admin-booking-header strong {
+    font-size: 14px;
+    color: var(--color-text-primary);
+}
+
+.admin-booking-header span {
+    font-size: 11px;
+    color: var(--color-accent);
+    font-weight: 600;
+}
+
+.admin-booking-details {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+}
+
+.admin-booking-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 4px;
+}
+
+.btn-cancel-booking {
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid #e74c3c;
+    background: rgba(231, 76, 60, 0.05);
+    color: #e74c3c;
+    font-size: 11px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: var(--transition-smooth);
+}
+
+.btn-cancel-booking:hover {
+    background: #e74c3c;
+    color: white;
+}
+
+.no-bookings-message {
+    text-align: center;
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    padding: 24px 0;
+}
+
+@media (max-width: 480px) {
+    .ai-chat-widget {
+        bottom: 12px;
+        right: 12px;
+    }
+    .chat-window {
+        width: calc(100vw - 24px);
+        height: 420px;
+    }
+}
