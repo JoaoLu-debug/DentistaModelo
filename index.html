@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seu Site | Estética e Saúde Premium</title>
+    <!-- Meta tags SEO -->
+    <meta name="description" content="Protocolos exclusivos e tecnologia de ponta para resultados naturais que valorizam sua beleza. Harmonização facial, tratamentos corporais e rejuvenescimento.">
+    <meta name="keywords" content="estética de luxo, harmonização facial, rejuvenescimento, bioestimulador, seu site, estética premium">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="light">
+
+    <!-- Invisible SVG filters for liquid glass & chromatic refraction -->
+    <svg aria-hidden="true" class="svg-filters" focusable="false">
+      <defs>
+        <!-- Filtro para painéis de vidro -->
+        <filter color-interpolation-filters="sRGB" height="200%" id="liquid-glass-filter" width="200%" x="-50%" y="-50%">
+          <feTurbulence baseFrequency="0.015 0.015" numOctaves="2" result="turbulence" seed="2" type="fractalNoise" />
+          <feGaussianBlur in="turbulence" result="blurredNoise" stdDeviation="4" />
+          <feDisplacementMap in="SourceGraphic" in2="blurredNoise" result="displaced" scale="25" xChannelSelector="R" yChannelSelector="B" />
+          <feGaussianBlur in="displaced" result="finalBlur" stdDeviation="6" />
+          <feComposite in="finalBlur" in2="finalBlur" operator="over" />
+        </filter>
+        <!-- Filtro para botões -->
+        <filter color-interpolation-filters="sRGB" height="200%" id="liquid-btn-filter" width="200%" x="-50%" y="-50%">
+          <feTurbulence baseFrequency="0.04 0.04" numOctaves="1" result="turbulence" seed="1" type="fractalNoise" />
+          <feGaussianBlur in="turbulence" result="blurredNoise" stdDeviation="2" />
+          <feDisplacementMap in="SourceGraphic" in2="blurredNoise" result="displaced" scale="35" xChannelSelector="R" yChannelSelector="B" />
+          <feGaussianBlur in="displaced" result="finalBlur" stdDeviation="2" />
+          <feComposite in="finalBlur" in2="finalBlur" operator="over" />
+        </filter>
+      </defs>
+    </svg>
+
+    <!-- Aura Background Lights -->
+    <div class="ambient-aura" id="aura-1"></div>
+    <div class="ambient-aura" id="aura-2"></div>
+    <div class="ambient-aura" id="aura-3"></div>
+
+    <!-- Header Navigation -->
+    <header class="main-header glass-panel">
+        <div class="header-container">
+            <a href="#" class="logo" id="logo-link">
+                <span class="logo-title">SEU SITE</span>
+                <span class="logo-subtitle">ESTÉTICA E SAÚDE</span>
+            </a>
+            
+            <nav class="nav-menu" id="nav-menu">
+                <a href="#home" class="nav-link active">Home</a>
+                <a href="#especialidades" class="nav-link">Especialidades</a>
+                <a href="#diagnostico" class="nav-link">Diagnóstico</a>
+                <a href="#sobre" class="nav-link">Sobre</a>
+                <a href="#contato" class="nav-link">Contato</a>
+            </nav>
+
+            <div class="header-actions">
+                <!-- Theme Toggle -->
+                <button class="theme-toggle-btn glass-panel" id="theme-toggle" aria-label="Alterar tema" title="Alternar entre luxo perolado e midnight obsidian">
+                    <span class="toggle-icon sun">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                    </span>
+                    <span class="toggle-icon moon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </span>
+                </button>
+                <a href="https://wa.me/5511999999999?text=Ol%C3%A1%2C+gostaria+de+agendar+uma+consulta+de+est%C3%A9tica+premium." target="_blank" class="btn-primary" id="btn-header-cta">
+                    <span>Agendar Consulta</span>
+                </a>
+                <button class="mobile-menu-toggle" id="mobile-toggle" aria-label="Abrir menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="home">
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="badge glass-panel"><span>Exclusividade & Naturalidade</span></div>
+                <h1 class="hero-title">
+                    Transformamos sua <span class="text-gradient">autoestima</span> com resultados naturais.
+                </h1>
+                <p class="hero-description">
+                    Protocolos exclusivos e tecnologia de ponta para resultados refinados que valorizam sua essência. Sinta a verdadeira experiência do cuidado de luxo.
+                </p>
+                <div class="hero-actions">
+                    <a href="https://wa.me/5511999999999?text=Ol%C3%A1%2C+gostaria+de+agendar+uma+consulta+de+est%C3%A9tica+premium." target="_blank" class="btn-primary hover-refract">
+                        <span>Agendar Agora</span>
+                    </a>
+                    <a href="#especialidades" class="btn-secondary glass-panel">
+                        <span>Conhecer Especialidades</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="hero-visual">
+                <!-- Morphing Liquid Glass Sculpture behind the image -->
+                <div class="sculpture-container">
+                    <div class="liquid-sculpture" id="sculpture-layer-1"></div>
+                    <div class="liquid-sculpture" id="sculpture-layer-2"></div>
+                    <div class="liquid-sculpture" id="sculpture-layer-3"></div>
+                </div>
+                <!-- Doctor Image Container with floating glass plates -->
+                <div class="image-wrapper">
+                    <img src="assets/doctor_hero.jpg" alt="Close-up macro de pele radiante e saudável - Estética de Luxo" class="hero-doctor-img">
+                    <!-- Glass overlays -->
+                    <div class="floating-glass glass-panel glass-plate-1">
+                        <div class="glass-inner">
+                            <span class="glass-number">01</span>
+                            <span class="glass-label">Protocolos Customizados</span>
+                        </div>
+                    </div>
+                    <div class="floating-glass glass-panel glass-plate-2">
+                        <div class="glass-inner">
+                            <span class="glass-number">02</span>
+                            <span class="glass-label">Alta Tecnologia</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Specialties Section with Sibling Dimming Grid -->
+    <section class="specialties-section" id="especialidades">
+        <div class="section-header">
+            <h2 class="section-title">Nossas <span class="text-gradient">Especialidades</span></h2>
+            <p class="section-subtitle">Procedimentos de vanguarda projetados sob medida para suas necessidades e simetria facial.</p>
+        </div>
+
+        <div class="grid-container" id="specialties-grid">
+            <!-- Card 1: Harmonização Facial -->
+            <div class="grid-col">
+                <div class="card glass-panel" data-specialty="harmonizacao">
+                    <div class="card-glow" style="--mouse-x: 50%; --mouse-y: 50%;"></div>
+                    <div class="card-img-container">
+                        <img src="assets/harmonizacao.jpg" alt="Harmonização Facial" class="card-img">
+                        <div class="card-overlay"></div>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-icon">
+                            <!-- SVG Icon Harmonizacao -->
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M12 2a10 10 0 0 0-10 10c0 5.523 4.477 10 10 10s10-4.477 10-10A10 10 0 0 0 12 2z"></path>
+                                <path d="M12 6v12M6 12h12M8.5 8.5l7 7M8.5 15.5l7-7"></path>
+                            </svg>
+                        </div>
+                        <h3 class="card-title">Harmonização Facial</h3>
+                        <p class="card-description">Procedimentos personalizados para realçar sua beleza natural, com preenchimento, toxina botulínica e contorno facial sofisticado.</p>
+                        <button class="card-btn" onclick="openDrawer('harmonizacao')">Saber Mais <span class="arrow">&rarr;</span></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Tratamentos Corporais -->
+            <div class="grid-col">
+                <div class="card glass-panel" data-specialty="corporal">
+                    <div class="card-glow" style="--mouse-x: 50%; --mouse-y: 50%;"></div>
+                    <div class="card-img-container">
+                        <img src="assets/corporal.jpg" alt="Tratamentos Corporais" class="card-img">
+                        <div class="card-overlay"></div>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-icon">
+                            <!-- SVG Icon Corporal -->
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M5.5 2c0 0 2 3 6.5 3s6.5-3 6.5-3S20 7 20 12c0 5-1.5 8-3.5 10H7.5C5.5 20 4 17 4 12c0-5 1.5-10 1.5-10z"></path>
+                                <path d="M12 5v17M8 10h8M9.5 15h5"></path>
+                            </svg>
+                        </div>
+                        <h3 class="card-title">Tratamentos Corporais</h3>
+                        <p class="card-description">Modelagem corporal avançada, redução de medidas e tratamentos de pele que unem inovação e saúde com foco em resultados reais.</p>
+                        <button class="card-btn" onclick="openDrawer('corporal')">Saber Mais <span class="arrow">&rarr;</span></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Rejuvenescimento Facial -->
+            <div class="grid-col">
+                <div class="card glass-panel" data-specialty="rejuvenescimento">
+                    <div class="card-glow" style="--mouse-x: 50%; --mouse-y: 50%;"></div>
+                    <div class="card-img-container">
+                        <img src="assets/rejuvenescimento.jpg" alt="Rejuvenescimento Facial" class="card-img">
+                        <div class="card-overlay"></div>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-icon">
+                            <!-- SVG Icon Rejuvenescimento -->
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"></path>
+                                <path d="M12 6v6l4 2M12 2v2M12 20v2M2 12h2M20 12h2"></path>
+                                <path d="M12 12m-3 0a3 3 0 1 0 6 0 3 3 0 1 0-6 0"></path>
+                            </svg>
+                        </div>
+                        <h3 class="card-title">Rejuvenescimento Facial</h3>
+                        <p class="card-description">Tecnologias de revitalização celular, como bioestimuladores de colágeno, peelings de alta performance e lasers de vanguarda.</p>
+                        <button class="card-btn" onclick="openDrawer('rejuvenescimento')">Saber Mais <span class="arrow">&rarr;</span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skin Assessment / Interactive Diagnostic Simulator -->
+    <section class="diagnostic-section" id="diagnostico">
+        <div class="diagnostic-container glass-panel">
+            <div class="diagnostic-header">
+                <span class="section-tag text-gradient">Ferramenta Inteligente</span>
+                <h2>Auto-Avaliação Estética</h2>
+                <p>Ajuste os parâmetros abaixo com base no que você busca melhorar na sua pele e descubra os tratamentos mais adequados para a sua jornada.</p>
+            </div>
+
+            <div class="simulator-grid">
+                <div class="simulator-controls">
+                    <!-- Control 1: Firmeza da Pele -->
+                    <div class="control-group">
+                        <div class="control-label-wrapper">
+                            <span class="control-label">Firmeza & Sustentação</span>
+                            <span class="control-value" id="val-firmeza">50%</span>
+                        </div>
+                        <input type="range" min="0" max="100" value="50" class="luxury-range" id="slider-firmeza">
+                        <div class="slider-ticks">
+                            <span>Mínima flacidez</span>
+                            <span>Flacidez evidente</span>
+                        </div>
+                    </div>
+
+                    <!-- Control 2: Linhas e Rugas -->
+                    <div class="control-group">
+                        <div class="control-label-wrapper">
+                            <span class="control-label">Sinais de Idade & Linhas</span>
+                            <span class="control-value" id="val-rugas">30%</span>
+                        </div>
+                        <input type="range" min="0" max="100" value="30" class="luxury-range" id="slider-rugas">
+                        <div class="slider-ticks">
+                            <span>Primeiras linhas</span>
+                            <span>Rugas profundas</span>
+                        </div>
+                    </div>
+
+                    <!-- Control 3: Viço e Manchas -->
+                    <div class="control-group">
+                        <div class="control-label-wrapper">
+                            <span class="control-label">Textura, Viço & Uniformidade</span>
+                            <span class="control-value" id="val-vico">40%</span>
+                        </div>
+                        <input type="range" min="0" max="100" value="40" class="luxury-range" id="slider-vico">
+                        <div class="slider-ticks">
+                            <span>Pele luminosa</span>
+                            <span>Sem brilho/Manchas</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="simulator-preview glass-panel">
+                    <div class="preview-glow"></div>
+                    <div class="preview-content">
+                        <h3>Recomendação Personalizada</h3>
+                        <p class="preview-intro">Com base nas suas seleções, os protocolos recomendados para você são:</p>
+                        
+                        <div class="treatment-results" id="treatment-results-box">
+                            <!-- Dynamic Content Inserted by JS -->
+                            <div class="result-item">
+                                <h4 id="result-title">Carregando sugestões...</h4>
+                                <p id="result-desc">Ajuste os sliders para ver a indicação personalizada de nossos especialistas.</p>
+                            </div>
+                        </div>
+
+                        <button class="btn-primary" id="btn-diagnostic-cta" onclick="openDiagnosticDrawer()">
+                            <span>Ver Plano Completo de Cuidados</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Clinic Philosophy Section -->
+    <section class="about-section" id="sobre">
+        <div class="about-container">
+            <div class="about-image-wrapper">
+                <div class="about-glow"></div>
+                <div class="glass-panel about-glass-frame">
+                    <div class="clinic-room-concept">
+                        <!-- Elegant minimal design details instead of raw image -->
+                        <div class="luxury-badge">
+                            <span>SEU SITE CLINIQUE</span>
+                        </div>
+                        <p class="clinic-motto">"A beleza autêntica reside na preservação da sua identidade única. Não criamos novas faces, revelamos sua melhor versão."</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="about-text-content">
+                <span class="section-tag text-gradient">Nossa Filosofia</span>
+                <h2>Ciência, Arte e Exclusividade</h2>
+                <p>
+                    Sob a direção de nossos especialistas, nossa clínica foi idealizada para ser um refúgio de bem-estar e sofisticação. Combinamos o que há de mais moderno na medicina estética com um olhar artístico meticuloso.
+                </p>
+                <p>
+                    Nossos tratamentos são inteiramente individualizados. Entendemos que cada rosto possui proporções únicas e que o verdadeiro rejuvenescimento deve ser invisível aos olhos e impactante na autoestima.
+                </p>
+                
+                <div class="pillars-grid">
+                    <div class="pillar-item">
+                        <div class="pillar-icon">✓</div>
+                        <div class="pillar-text">
+                            <strong>Avaliação Tridimensional</strong>
+                            <p>Análise facial computadorizada completa de ângulos e proporções.</p>
+                        </div>
+                    </div>
+                    <div class="pillar-item">
+                        <div class="pillar-icon">✓</div>
+                        <div class="pillar-text">
+                            <strong>Tecnologias de Ponta</strong>
+                            <p>Equipamentos aprovados pela Anvisa com tecnologia robótica e microfocada.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section" id="contato">
+        <div class="contact-container">
+            <div class="contact-info-panel glass-panel">
+                <h2>Fale Conosco</h2>
+                <p>Pronto para dar o próximo passo na sua jornada de beleza? Entre em contato e agende sua consulta exclusiva.</p>
+                
+                <div class="contact-details">
+                    <div class="detail-item">
+                        <span class="detail-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                        </span>
+                        <div>
+                            <h4>Telefone e WhatsApp</h4>
+                            <p>+55 (11) 99999-9999</p>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        </span>
+                        <div>
+                            <h4>Endereço</h4>
+                            <p>Av. Paulista, 1000 - Cj. 1201<br>Jardins, São Paulo - SP</p>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        </span>
+                        <div>
+                            <h4>Horário de Atendimento</h4>
+                            <p>Segunda a Sexta: 09h às 20h<br>Sábados: 09h às 14h</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="social-links">
+                    <a href="#" aria-label="Instagram" class="social-btn glass-panel">IG</a>
+                    <a href="#" aria-label="Facebook" class="social-btn glass-panel">FB</a>
+                    <a href="#" aria-label="YouTube" class="social-btn glass-panel">YT</a>
+                </div>
+            </div>
+
+            <!-- Contact Interactive Form Panel -->
+            <div class="contact-form-panel glass-panel">
+                <div class="form-glow"></div>
+                <h3>Envie uma Mensagem</h3>
+                <p>Nossa equipe entrará em contato para agendar seu horário.</p>
+                
+                <form id="contact-form" onsubmit="handleFormSubmit(event)">
+                    <div class="input-group">
+                        <label for="form-name">Nome Completo</label>
+                        <input type="text" id="form-name" required placeholder="Seu nome">
+                    </div>
+                    <div class="input-group">
+                        <label for="form-phone">WhatsApp</label>
+                        <input type="tel" id="form-phone" required placeholder="(11) 99999-9999">
+                    </div>
+                    <div class="input-group">
+                        <label for="form-service">Tratamento de Interesse</label>
+                        <select id="form-service">
+                            <option value="harmonizacao">Harmonização Facial</option>
+                            <option value="corporal">Tratamentos Corporais</option>
+                            <option value="rejuvenescimento">Rejuvenescimento Facial</option>
+                            <option value="outro">Outro / Não tenho certeza</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="form-msg">Mensagem (Opcional)</label>
+                        <textarea id="form-msg" rows="3" placeholder="Gostaria de agendar para a próxima semana..."></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary full-width" id="btn-submit-form">
+                        <span>Enviar Solicitação</span>
+                    </button>
+                </form>
+                <div class="success-message" id="form-success">
+                    <span class="success-icon">✓</span>
+                    <h4>Mensagem enviada com sucesso!</h4>
+                    <p>Em breve retornaremos o contato via WhatsApp.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <p>&copy; 2026 Seu Site Estética e Saúde. Todos os direitos reservados. Desenvolvido com Estética Refrativa de Luxo.</p>
+    </footer>
+
+    <!-- Specialty Detail Drawers (Laterais / Sliders) -->
+    <div class="drawer-overlay" id="drawer-overlay" onclick="closeAllDrawers()"></div>
+
+    <!-- Drawer: Harmonização Facial -->
+    <div class="drawer glass-panel" id="drawer-harmonizacao">
+        <button class="drawer-close" onclick="closeAllDrawers()">&times;</button>
+        <div class="drawer-content">
+            <span class="drawer-tag">Procedimento Estético</span>
+            <h2>Harmonização Facial</h2>
+            <div class="drawer-img-container">
+                <img src="assets/harmonizacao.jpg" alt="Harmonização Facial" class="drawer-img">
+            </div>
+            
+            <p class="drawer-intro">
+                A Harmonização Facial é uma associação de procedimentos que visa equilibrar os traços do rosto de maneira sutil e elegante, respeitando as proporções individuais.
+            </p>
+
+            <h3>Técnicas Utilizadas</h3>
+            <ul class="drawer-list">
+                <li><strong>Preenchimento com Ácido Hialurônico:</strong> Ideal para recuperar volume em maçãs do rosto, preencher olheiras, definir mandíbula e projetar mento (queixo).</li>
+                <li><strong>Toxina Botulínica (Botox):</strong> Prevenção e suavização de linhas de expressão na testa, pés de galinha e glabela.</li>
+                <li><strong>Fios de Sustentação:</strong> Efeito de tração leve (efeito lift) e estímulo contínuo de colágeno natural.</li>
+                <li><strong>Rinomodelação:</strong> Ajustes estéticos no nariz de forma não cirúrgica.</li>
+            </ul>
+
+            <div class="info-highlight glass-panel">
+                <div>
+                    <strong>Tempo de Procedimento:</strong>
+                    <p>40 a 90 minutos</p>
+                </div>
+                <div>
+                    <strong>Recuperação:</strong>
+                    <p>Imediata (leve inchaço por 48h)</p>
+                </div>
+            </div>
+
+            <a href="https://wa.me/5511999999999?text=Ol%C3%A1%2C+gostaria+de+saber+mais+sobre+a+Harmoniza%C3%A7%C3%A3o+Facial." target="_blank" class="btn-primary full-width text-center">
+                <span>Agendar Avaliação de Harmonização</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Drawer: Tratamentos Corporais -->
+    <div class="drawer glass-panel" id="drawer-corporal">
+        <button class="drawer-close" onclick="closeAllDrawers()">&times;</button>
+        <div class="drawer-content">
+            <span class="drawer-tag">Procedimento Estético</span>
+            <h2>Tratamentos Corporais</h2>
+            <div class="drawer-img-container">
+                <img src="assets/corporal.jpg" alt="Tratamentos Corporais" class="drawer-img">
+            </div>
+            
+            <p class="drawer-intro">
+                Nossos protocolos corporais aliam tecnologia de compressão, drenagem e lasers direcionados para atuar na gordura localizada, flacidez e contorno corporal.
+            </p>
+
+            <h3>Protocolos de Destaque</h3>
+            <ul class="drawer-list">
+                <li><strong>Lipo Sem Cortes (Ultrassom Focalizado):</strong> Quebra de gordura localizada profunda em áreas como abdômen e flancos.</li>
+                <li><strong>Radiofrequência Multipolar:</strong> Aquecimento cutâneo profundo que estimula o colágeno contra a flacidez e celulite.</li>
+                <li><strong>Endermologia Robótica:</strong> Massagem profunda vácuo-aspirativa para melhora da circulação e modelagem do contorno.</li>
+                <li><strong>Enzimas Lipolíticas:</strong> Aplicações subcutâneas direcionadas para acelerar o metabolismo local da gordura.</li>
+            </ul>
+
+            <div class="info-highlight glass-panel">
+                <div>
+                    <strong>Sessões Recomendadas:</strong>
+                    <p>5 a 10 sessões</p>
+                </div>
+                <div>
+                    <strong>Duração da Sessão:</strong>
+                    <p>30 a 60 minutos</p>
+                </div>
+            </div>
+
+            <a href="https://wa.me/5511999999999?text=Ol%C3%A1%2C+gostaria+de+saber+mais+sobre+os+Tratamentos+Corporais." target="_blank" class="btn-primary full-width text-center">
+                <span>Agendar Avaliação Corporal</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Drawer: Rejuvenescimento Facial -->
+    <div class="drawer glass-panel" id="drawer-rejuvenescimento">
+        <button class="drawer-close" onclick="closeAllDrawers()">&times;</button>
+        <div class="drawer-content">
+            <span class="drawer-tag">Procedimento Estético</span>
+            <h2>Rejuvenescimento Facial</h2>
+            <div class="drawer-img-container">
+                <img src="assets/rejuvenescimento.jpg" alt="Rejuvenescimento Facial" class="drawer-img">
+            </div>
+            
+            <p class="drawer-intro">
+                Tratamentos avançados dedicados à restauração celular da pele, devolvendo o brilho, elasticidade, textura uniforme e firmeza perdidos com o tempo.
+            </p>
+
+            <h3>Tecnologias e Métodos</h3>
+            <ul class="drawer-list">
+                <li><strong>Bioestimuladores de Colágeno (Sculptra/Radiesse):</strong> Injeções que induzem a produção de colágeno natural pela própria pele por até 25 meses.</li>
+                <li><strong>Ultrassom Microfocado (Liftera/Ultraformer):</strong> Lifting facial não-invasivo atuando na camada muscular profunda (SMAS).</li>
+                <li><strong>Peeling Químico de Luxo:</strong> Renovação celular para clareamento de manchas, melasma e melhora drástica de poros e textura.</li>
+                <li><strong>Microagulhamento com Drug Delivery:</strong> Infusão direta de vitaminas e fatores de crescimento sob a pele.</li>
+            </ul>
+
+            <div class="info-highlight glass-panel">
+                <div>
+                    <strong>Intervalo:</strong>
+                    <p>Mensal ou trimestral</p>
+                </div>
+                <div>
+                    <strong>Resultados:</strong>
+                    <p>Graduais de 30 a 90 dias</p>
+                </div>
+            </div>
+
+            <a href="https://wa.me/5511999999999?text=Ol%C3%A1%2C+gostaria+de+saber+mais+sobre+o+Rejuvenescimento+Facial." target="_blank" class="btn-primary full-width text-center">
+                <span>Agendar Avaliação de Rejuvenescimento</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Drawer: Diagnostic Simulator Result Details -->
+    <div class="drawer glass-panel" id="drawer-diagnostic">
+        <button class="drawer-close" onclick="closeAllDrawers()">&times;</button>
+        <div class="drawer-content">
+            <span class="drawer-tag">Diagnóstico Exclusivo</span>
+            <h2>Seu Cronograma Sugerido</h2>
+            <div class="diagnostic-summary-box glass-panel">
+                <h4>Status do Diagnóstico</h4>
+                <p id="diag-summary-text">Avaliando parâmetros de sustentação, linhas e viço.</p>
+            </div>
+            
+            <div class="diagnostic-details-list" id="diag-details-list">
+                <!-- Dynamically filled by JS based on slider configuration -->
+            </div>
+
+            <div class="clinic-assurance glass-panel">
+                <p><strong>Nota de Segurança:</strong> Este simulador oferece uma recomendação preliminar baseada em parâmetros estéticos comuns. Uma consulta clínica presencial com nossos especialistas é indispensável para traçar o plano definitivo.</p>
+            </div>
+
+            <button class="btn-primary full-width text-center" onclick="sendDiagnosticToWhatsApp()">
+                <span>Enviar Diagnóstico e Agendar via WhatsApp</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+</html>
