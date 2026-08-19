@@ -5,8 +5,8 @@
 /* Design Tokens & Theme Variables */
 :root {
     /* Fonts */
-    --font-primary: 'Inter', sans-serif;
-    --font-heading: 'Outfit', sans-serif;
+    --font-primary: 'Corben', serif;
+    --font-heading: 'Corben', serif;
 
     /* Transition Curves */
     --transition-smooth: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
